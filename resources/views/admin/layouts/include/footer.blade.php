@@ -1,0 +1,1 @@
+{!! trans('admin/footer.copyright') !!} {{ date('Y') }}
