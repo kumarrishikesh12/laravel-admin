@@ -13,4 +13,7 @@ return [
     |
     */
     'dashboard' => 'Dashboard',
+    'twitter' => 'Twitter Feeds',
+    'facebook' => 'Facebook Feeds',
+    'instagram' => 'Instagram Feeds',
 ];

@@ -20,6 +20,7 @@
             <nav class="side-nav">
                 <!-- BEGIN: side-nav-content -->
                 <ul class="unifyMenu" id="unifyMenu">
+                    
                     <li class="{{ Request::is('dashboard')?'selected':'' }}">
                         <a href="{{ url('dashboard') }}">
                             <span class="has-icon">
@@ -28,6 +29,63 @@
                             <span class="nav-title">{!! trans('user/sidebar.dashboard') !!}</span>
                         </a>
                     </li>
+
+
+                     <li class="{{ Request::is('sociallogin')?'selected':'' }}">
+                        <a href="{{ url('social_login') }}">
+                            <span class="has-icon">
+                                <i class="icon-settings"></i>
+                            </span>
+                            <span class="nav-title">{!! trans('user/sidebar.sociallogin') !!}</span>
+                        </a>
+                     </li>
+
+
+
+                    <li class="{{ Request::is('twitter')?'selected':'' }}">
+                        <a href="{{ url('twitter_feeds') }}">
+                            <span class="has-icon">
+                                <i class="icon-twitter"></i>
+                            </span>
+                            <span class="nav-title">{!! trans('user/sidebar.twitter') !!}</span>
+                        </a>
+                    </li>
+
+
+                    <li class="{{ Request::is('facebook')?'selected':'' }}">
+                        <a href="{{ url('facebook_feeds') }}">
+                            <span class="has-icon">
+                                <i class="icon-facebook"></i>
+                            </span>
+                            <span class="nav-title">{!! trans('user/sidebar.facebook') !!}</span>
+                        </a>
+                    </li>
+
+
+                   <li class="{{ Request::is('instagram')?'selected':'' }}">
+                        <a href="{{ url('instagram_feeds') }}">
+                            <span class="has-icon">
+                                <i class="icon-instagram"></i>
+                            </span>
+                            <span class="nav-title">{!! trans('user/sidebar.instagram') !!}</span>
+                        </a>
+                    </li>
+
+
+<!--  
+                    <li class="{{ Request::is('all_feeds')?'selected':'' }}">
+                        <a href="{{ url('all_feeds') }}">
+                            <span class="has-icon">
+                                <i class="icon-feeds"></i>
+                            </span>
+                            <span class="nav-title">{!! trans('user/sidebar.all_feeds') !!}</span>
+                        </a>
+                    </li>
+
+                     -->
+
+
+
                 </ul>
                 <!-- END: side-nav-content -->
             </nav>

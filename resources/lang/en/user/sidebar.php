@@ -14,4 +14,9 @@ return [
     */
     'dashboard' => 'Dashboard',
     'users' => 'Users',
+    'sociallogin' => 'Social Login',
+    'twitter' => 'Twitter Feeds',
+    'facebook' => 'Facebook Feeds',
+    'instagram' => 'Instagram Feeds',
+    'all_feeds' => 'All Social Feeds',
 ];

@@ -38,7 +38,42 @@ Route::group(array('middleware' => 'revalidate','middleware' => 'auth'), functio
 
     // Route::get('users', 'UserController@index');
     // Route::resource('users','UserController');
+
+
+    Route::get('/dashboard/connect_to_twitter', 'DashboardController@connecttotwitter');
+
+    Route::post('/dashboard/connect_to_twitter', 'DashboardController@connect_to_twitter')->name('connect_to_twitter');
+
+    Route::post('twitter/update','DashboardController@update_twitter');
+
+
+
+    Route::get('/dashboard/connect_to_facebook', 'DashboardController@connecttofacebook');
+
+    Route::post('/dashboard/connect_to_facebook', 'DashboardController@connect_to_facebook')->name('connect_to_facebook');
+
+    Route::post('facebook/update', 'DashboardController@update_facebook');
+
+
+
+ 
+    Route::get('/dashboard/connect_to_instagram', 'DashboardController@connecttoinstagram');
+
+    Route::post('/dashboard/connect_to_instagram', 'DashboardController@connect_to_instagram')->name('connect_to_instagram');
+
+    Route::post('instagram/update', 'DashboardController@update_instagram');
+
+
+    //feeds Routes 
+
+    Route::get('/twitter_feeds', 'DashboardController@twitter_feeds')->name('twitter_feeds');
+
+
 });
+
+
+
+
 Auth::routes();
 
 Route::group(['middleware' => 'revalidate', 'prefix' => 'admin', 'namespace' => 'Admin'], function () {
@@ -115,4 +150,14 @@ defined('MARKETPLACES_IMAGE_URL') or define('MARKETPLACES_IMAGE_URL', url('uploa
 
 Auth::routes();
 
+
 Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
+
+Route::get('/social_login', 'DashboardController@social_login')->name('social_login');
+
+
+Route::get('/twitter_feeds', 'DashboardController@twitter_feeds')->name('twitter_feeds');
+
+Route::get('/facebook_feeds', 'DashboardController@facebook_feeds')->name('facebook_feeds');
+
+Route::get('/instagram_feeds', 'DashboardController@instagram_feeds')->name('instagram_feeds');

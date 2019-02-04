@@ -25,5 +25,4 @@ return [
     'user_create_message' => 'User created successfully!',
     'user_update_message' => 'User updated successfully!',
     'user_deleted_message' => 'User deleted successfully!',
-
 ];
