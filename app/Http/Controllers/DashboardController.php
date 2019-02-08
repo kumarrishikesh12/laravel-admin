@@ -643,7 +643,7 @@ class DashboardController extends Controller
          //$hashtags = $twitter_data['hashtags'];
        
 
-            $tw_next_url ='';
+            //$tw_next_url ='';
 
             $settings = array(
                 'oauth_access_token' => $consumerkeyapikey,
@@ -652,27 +652,48 @@ class DashboardController extends Controller
                 'consumer_secret' => $accesstokensecret
             );
 
-             // $url = 'https://api.twitter.com/1.1/search/tweets.json';
-                $url = 'https://api.twitter.com/1.1/search/tweets.json';
 
-                $getfield = '?q='.$hashtag_search.'&count=30'; 
-                                //30hashtag post defined
-          
-            
+                $url = 'https://api.twitter.com/1.1/search/tweets.json';
+                $getfield = '?q='.$hashtag_search.'&count=100'; //30hashtag post defined
                 $requestMethod = 'GET';
                 $twitter = new TwitterAPIExchange($settings);
-                //$tweest = $twitter->setGetfield($getfield)->buildOauth($url, $requestMethod)->performRequest();
-
-
-                $tweest = $twitter->setGetfield($getfield)->buildOauth($url, $requestMethod)->performRequest();
-               
-
-                 $tweets = json_decode($tweest, true);
+                 $tweest = $twitter->setGetfield($getfield)->buildOauth($url, $requestMethod)->performRequest();
                  
- 
+                 $tweets = json_decode($tweest, true);
+                 //dd($tweets);
+                 //die();               
+
+
+
+             /*Start For Search_metadata --> next_results_set  Pagination */
+   
+                 $next_results = $tweets['search_metadata']['next_results'];
+                 $max_id = $tweets['search_metadata']['max_id'];
+                
+             /*End For Search_metadata --> next_results_set  Pagination */
+
+
+                 if(isset($next_results) && !empty($next_results) && isset($max_id) && !empty($max_id)){
+
+                    //echo $next_results;   //echo $max_id;  //die();
+                      $url = 'https://api.twitter.com/1.1/search/tweets.json';
+                      $getfield = '?q='.$hashtag_search.'&count=100'.$next_results; 
+                      $requestMethod = 'GET';
+                      $twitter = new TwitterAPIExchange($settings);
+                      $tweest = $twitter->setGetfield($getfield)->buildOauth($url, $requestMethod)->performRequest();
+                      $tweets_next_page = json_decode($tweest, true);
+
+                      //$next_results = $tweets_next_page['search_metadata']['next_results'];
+                        //die();
+
+                 }
+
+                  
+
+
                 Session::flash('success_message', "Your Instagram Details Found");
 
-                return view('twitter_feeds')->with('tweets',$tweets);
+                return view('twitter_feeds')->with('tweets',$tweets)->with('tweets_next_page',$tweets_next_page);
 
 
 
@@ -760,17 +781,18 @@ class DashboardController extends Controller
       
         ];
 
-         //print_r($instas_next_page); 
-         //die(); 
+         //print_r($last_page); // exist_next_page: 1 = true , end_cursor: token_next_page   
 
   }
 
 }
+        /* if Next Page Exist then get the end_Cursor for that and data  */
+        $next_page_end_cursor = $next_page['end_cursor'];
+        $exist_next_page = $next_page['exist_next_page'];
+        //die();
 
 
-        Session::flash('success_message', "Your Instagram Details Found");
-
-        return view('instagram_feeds')->with('instas',$instas)->with('insta_array',$insta_array)->with('next_page',$next_page);
+   return view('instagram_feeds')->with('instas',$instas)->with('insta_array',$insta_array)->with('next_page',$next_page)->with('tags_json_link',$tags_json_link);
 
      
   }//if closed instagram_data
@@ -778,7 +800,7 @@ class DashboardController extends Controller
 else{//else Part  
 
 
-        if ($instagram_data['accesstoken'] === NULL && $instagram_data['accesstokensecret'] === NULL ) {
+ if($instagram_data['accesstoken'] === NULL && $instagram_data['accesstokensecret'] === NULL ){
             
             //if don't get access_token from database then redirect without data
             //echo "if don't get access_token from database then redirect without data";
@@ -789,7 +811,7 @@ else{//else Part
  
      } //end else
 
-           //return view('instagram_feeds')->with('instas',$instas)->with('next_url_api',$next_url_api);
+    //return view('instagram_feeds')->with('instas',$instas)->with('next_url_api',$next_url_api);
  
 
 }// function closed

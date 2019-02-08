@@ -62,14 +62,20 @@ curl_setopt($ch, CURLOPT_SSLVERSION, 3);
 <div class="main-content">
 
 <?php 
-//if($next_page['exist_next_page'] === true ){
+
+if(!empty($next_page['end_cursor'])) { 
+
 //display pagination if data exist and not empty
+//$next_page['exist_next_page'];
+$limit = 18;  
+$next_page['end_cursor'];
+$tags_json_link; //link_url: https://www.instagram.com/explore/tags/guardiansofthegalaxy/?__a=1
 
-//echo $next_page['exist_next_page'];
-//echo $next_page['end_cursor'];
-//die();
+$next_full_url_= $tags_json_link.'&first='.$limit.'&after='.$next_page['end_cursor'];
+//Get Full link with end_cursor above.
 
-//}
+
+}
 ?>
 
 

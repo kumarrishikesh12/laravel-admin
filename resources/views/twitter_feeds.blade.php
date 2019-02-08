@@ -39,7 +39,12 @@
 .container {
   padding: 2px 16px;
 }
+
+
+
 </style>
+
+
 
 <?php 
 
@@ -54,7 +59,25 @@ curl_setopt($ch, CURLOPT_SSLVERSION, 3);
 
 <?php
 
-if(isset($tweets) && !empty($tweets)){ 
+if(isset($tweets) && !empty($tweets && !empty($tweets_next_page['search_metadata']['next_results']))) { 
+?>
+ 
+  <ul class="pagination">
+    <li class="page-item float-left" id="previous_data"><a class="page-link" href=<?php echo $tweets['search_metadata']['refresh_url']; ?> name="previous">Previous</a></li>
+    
+    <li class="page-item float-right" id="next_data"><a class="page-link" href=<?php echo $tweets_next_page['search_metadata']['next_results']; ?> name="next"> Next</a></li>
+  </ul>
+
+
+<?php
+
+  /*For Search_metadata --> next_results_set  Pagination */
+   
+    // $next_results = $tweets['search_metadata']['next_results'];
+   // $max_id = $tweets['search_metadata']['max_id'];
+   //die();
+
+
 
  foreach( $tweets['statuses'] as $key => $value ) {
 
