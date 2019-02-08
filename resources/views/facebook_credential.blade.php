@@ -20,6 +20,10 @@
 </header>
 <!-- END: .main-heading -->
 <div class="main-content">
+
+
+
+
         <form id="facebook_details" action="{{ url('dashboard/connect_to_facebook')}}" method="post" enctype="multipart/form-data">
 
              @include('layouts.include.notifications')
@@ -31,31 +35,30 @@
    
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                             <div class="form-group">
-                                <input type="text" class="form-control" id="facebookaccesstoken" name="accesstoken" placeholder="Access Token*" value="" />
-                            </div>
-                        </div>
-                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                            <div class="form-group">
-                                <input type="text" class="form-control" id="facebookaccesstokensecret" name="accesstokensecret" placeholder="Access Token Secret*" value="" />
+                                <input type="text" class="form-control" id="facebookappid" name="facebook_appid" placeholder="App ID*" value="" />
                             </div>
                         </div>
 
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                             <div class="form-group">
-                                <input type="text" class="form-control" id="facebookconsumerkeyapikey" name="consumerkeyapikey" placeholder="ConsumerKey API Key*" value="" />
+                                <input type="text" class="form-control" id="facebookappsecret" name="facebook_appsecret" placeholder="App Secret ID*" value="" />
                             </div>
                         </div>
 
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                             <div class="form-group">
-                                <input type="text" class="form-control" id="facebookconsumersecretapi" name="consumersecretapikey" placeholder="ConsumerSecret APISecret Key*" value="" />
+                                <input type="text" class="form-control" id="facebookusername" name="facebook_username" placeholder="Facebook Username* ex: zuck " value="" />
                             </div>
                         </div>
+
+
+
+
 
                     </div>
                     <div class="actions clearfix">
                         <button type="submit" style="margin-top: 15px;
-" class="btn btn-primary"><span class="icon-save2"></span>Create</button>
+" class="btn btn-primary"><span class="icon-save2"></span>Create / Save </button>
                    
 
                     <button type="submit" style="margin-top: 15px;

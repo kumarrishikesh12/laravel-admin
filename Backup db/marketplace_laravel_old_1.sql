@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Feb 08, 2019 at 08:33 AM
+-- Generation Time: Feb 06, 2019 at 02:35 PM
 -- Server version: 10.1.37-MariaDB
 -- PHP Version: 7.1.26
 
@@ -236,7 +236,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `firstname`, `lastname`, `username`, `email`, `password`, `image`, `status`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'Rishikesh', 'kumar', 'kumarrishikesh12', 'kumarrishikesh12@gmail.com', '$2y$10$rmdxpzvqLLIykYOSuKvpCOuPuadtxidjzuqk1bok8sCMx7tYZzG62', 'user_1548825419.jpeg', '1', 'Xxk08m0TnCDOuLobUooP6uxRXs7XPwWcH8zRplhqmvNzbpAuJuuVqrxE2D5V', '2019-01-30 04:28:40', '2019-01-30 05:16:59');
+(1, 'Rishikesh', 'kumar', 'kumarrishikesh12', 'kumarrishikesh12@gmail.com', '$2y$10$rmdxpzvqLLIykYOSuKvpCOuPuadtxidjzuqk1bok8sCMx7tYZzG62', 'user_1548825419.jpeg', '1', 'Xxk08m0TnCDOuLobUooP6uxRXs7XPwWcH8zRplhqmvNzbpAuJuuVqrxE2D5V', '2019-01-30 04:28:40', '2019-01-30 05:16:59'),
+(2, 'Jagdish', 'Chaudhary', 'jagdishdsa', 'jagdish@elsner.com', '$2y$10$60TOKugpPohyicEsEV8VA.i8lRbFdCp6UbbxZh5Oq4KROOvOIRApi', 'user_1549459004.jpeg', '1', NULL, '2019-02-06 12:56:15', '2019-02-06 13:16:51');
 
 -- --------------------------------------------------------
 
@@ -255,7 +256,6 @@ CREATE TABLE `userssocial_credentials` (
   `hashtags` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '#india' COMMENT 'Hashtags Twitter',
   `app_id` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT 'AppID' COMMENT 'AppID Facebook',
   `appsecret` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT 'AppSecret' COMMENT 'AppSecret Facebook',
-  `username` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT 'zuck' COMMENT 'Facebook Username',
   `user_id` int(10) UNSIGNED NOT NULL COMMENT 'User ID',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -266,10 +266,11 @@ CREATE TABLE `userssocial_credentials` (
 -- Dumping data for table `userssocial_credentials`
 --
 
-INSERT INTO `userssocial_credentials` (`id`, `social_webname`, `accesstoken`, `accesstokensecret`, `consumerkeyapikey`, `consumersecretapikey`, `instagram_access_token`, `hashtags`, `app_id`, `appsecret`, `username`, `user_id`, `created_at`, `updated_at`, `remember_token`) VALUES
-(1, 'twitter', '6b04ZSegdWhBBh8x37itrnZ51', 'flpga2v8VbU2UDejAB00s3SVM9YvpLHQ20SWC36z1EVcww7eXP', '3413713334-uROrvdJT6kwD347za6YXtPS36HzF1zgSRhOTcnJ', 'diDI8DdvES7ZtoCQvaOwzoar8ck26cVyVuf6Ec0KlQ6ra', NULL, '#india', 'AppID', 'AppSecret', NULL, 1, '2019-02-06 16:17:58', '2019-02-06 16:17:58', NULL),
-(2, 'facebook', 'OBsiJBsp8lm_mtSj63o34UL_4kA', NULL, NULL, NULL, NULL, '#msdhoni', '606343186475644', 'aab3203d2fee6c0eb72aece9d986e201', 'Rishikeshkuamr12', 1, '2019-02-06 18:41:55', '2019-02-06 18:41:55', NULL),
-(3, 'instagram', '2907a5d9495a437ba75097b2a9414bfd', 'f3bfbb47b0974c108c0ce0b8247732d8', NULL, NULL, NULL, 'msdhoni', 'AppID', 'AppSecret', NULL, 1, '2019-02-07 09:49:19', '2019-02-07 09:49:19', NULL);
+INSERT INTO `userssocial_credentials` (`id`, `social_webname`, `accesstoken`, `accesstokensecret`, `consumerkeyapikey`, `consumersecretapikey`, `instagram_access_token`, `hashtags`, `app_id`, `appsecret`, `user_id`, `created_at`, `updated_at`, `remember_token`) VALUES
+(1, 'twitter', '3413713334-uROrvdJT6kwD347za6YXtPS36HzF1zgSRhOTcnJ', 'diDI8DdvES7ZtoCQvaOwzoar8ck26cVyVuf6Ec0KlQ6ra', '6b04ZSegdWhBBh8x37itrnZ51', 'flpga2v8VbU2UDejAB00s3SVM9YvpLHQ20SWC36z1EVcww7eXP', NULL, '#dhoni', 'AppID', 'AppSecret', 1, '2019-01-30 08:53:46', '2019-01-30 08:53:46', NULL),
+(2, 'facebook', 'EAAInd0Y96nwBADTIZBFWmPxkg91YyVTlYCWhNDquinn70h3L67jvZCEodH029lhaevO9elu67mzjIKZAhYhpSE4TRO5fLt34uRq46GT1h3WH0X5k9miJ2YBtEbBDZCnX57FLSFhX7mEiN9l5CFszjB8EsSZCUdjuCpiRlJH8Pzu9XNPnhKep1kZC1WLcpL18IZD', NULL, NULL, NULL, NULL, '', '606343186475644', 'aab3203d2fee6c0eb72aece9d986e201', 1, '2019-01-31 04:35:19', '2019-01-31 04:35:19', NULL),
+(3, 'instagram', '2907a5d9495a437ba75097b2a9414bfd', 'f3bfbb47b0974c108c0ce0b8247732d8', '', '', '1942978854.2907a5d.d1f11cb28b774f7289514a1b23b6dc43', '', 'AppID', 'AppSecret', 1, '2019-01-31 05:20:56', '2019-01-31 05:20:56', NULL),
+(6, 'twitter', '3413713334-uROrvdJT6kwD347za6YXtPS36HzF1zgSRhOTcnJ', 'diDI8DdvES7ZtoCQvaOwzoar8ck26cVyVuf6Ec0KlQ6ra', '6b04ZSegdWhBBh8x37itrnZ51', 'flpga2v8VbU2UDejAB00s3SVM9YvpLHQ20SWC36z1EVcww7eXP', NULL, '#india', 'AppID', 'AppSecret', 2, '2019-02-06 13:31:03', '2019-02-06 13:31:03', NULL);
 
 --
 -- Indexes for dumped tables
@@ -426,7 +427,7 @@ ALTER TABLE `sub_categories`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `userssocial_credentials`

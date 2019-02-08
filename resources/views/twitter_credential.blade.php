@@ -68,7 +68,7 @@
 			
 
                     <button name="createtwitter" type="submit" style="margin-top: 15px;
-" class="btn btn-primary"><span class="icon-save2"></span>Create</button>
+" class="btn btn-primary"><span class="icon-save2"></span>Create </button>
                     
 					
 

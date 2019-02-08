@@ -50,13 +50,7 @@
 
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                             <div class="form-group">
-                                <input type="hidden" class="form-control" id="instagramconsumerkeyapikey" name="consumerkeyapikey" placeholder="ConsumerKey API Key*" value="" disabled="disabled" />
-                            </div>
-                        </div>
-
-                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                            <div class="form-group">
-                                <input type="hidden" class="form-control" id="instagramconsumersecretapi" name="consumersecretapikey" placeholder="ConsumerSecret APISecret Key*" value="" disabled="disabled" />
+                                <input type="text" class="form-control" id="instagramhashtags" name="instagram_hashtags" placeholder="Hashtag Keyword*" value="{{ $user->hashtags }}" />
                             </div>
                         </div>
 

@@ -32,12 +32,14 @@
     </button>
     
      <button type="button" class="btn btn-primary">
-      <a href="dashboard/connect_to_facebook"> Facebook Credential </a>
+     <a href="dashboard/connect_to_instagram"> Instagram Credential </a>
      </button>
 
      <button type="button" class="btn btn-primary">
-     <a href="dashboard/connect_to_instagram"> Instagram Credential </a>
+      <a href="dashboard/connect_to_facebook"> Facebook Credential </a>
      </button>
+
+
 
     </div>
    </div>

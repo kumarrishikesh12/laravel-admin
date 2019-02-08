@@ -20,6 +20,9 @@
 </header>
 <!-- END: .main-heading -->
 <div class="main-content">
+
+
+
         <form id="instagram_create_form" action="{{ url('dashboard/connect_to_instagram')}}" method="post" enctype="multipart/form-data">
 
              @include('layouts.include.notifications')
@@ -40,26 +43,17 @@
                             </div>
                         </div>
 
-                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                            <div class="form-group">
-                                <input type="hidden" class="form-control" id="instagramconsumerkeyapikey" name="consumerkeyapikey" placeholder="ConsumerKey API Key*" value="" disabled="disabled" />
-                            </div>
-                        </div>
-
-                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                            <div class="form-group">
-                                <input type="hidden" class="form-control" id="instagramconsumersecretapi" name="consumersecretapikey" placeholder="ConsumerSecret APISecret Key*" value="" disabled="disabled" />
-                            </div>
-                        </div>
 
                     </div>
 
                     <div class="actions clearfix">
                         <button type="submit" style="margin-top: 15px;
-" class="btn btn-primary"><span class="icon-save2"></span>Create</button>
+" class="btn btn-primary"><span class="icon-save2"></span>Create / Save </button>
 
- <button type="submit" style="margin-top: 15px;
+
+<button type="submit" style="margin-top: 15px;
 " class="btn btn-primary"><span class="icon-"></span> <a style="color: #ffffff;" href="{{ url('dashboard') }}"> Back </a> </button>
+
                     </div>
 
 
@@ -69,6 +63,9 @@
                 </div>
             </div>
         </form>
+
+
+
     </div>
     <!-- END: .main-content -->
 @endsection

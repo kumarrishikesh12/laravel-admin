@@ -17,12 +17,15 @@ class CreateUsersSocialCredentialsTable extends Migration
             
             $table->increments('id');
             $table->string('social_webname')->comment('SocialWebsite Name');
-            $table->string('accesstoken')->comment('Access Token');
-            $table->string('accesstokensecret')->comment('Accesstoken secretName');
-            $table->string('consumerkeyapikey')->comment('Consumer Key API');
-            $table->string('consumersecretapikey')->comment('Consumer secretAPIKey');
+            $table->string('accesstoken')->nullable()->comment('Access Token');
+            $table->string('accesstokensecret')->nullable()->comment('Accesstoken secretName');
+            $table->string('consumerkeyapikey')->nullable()->comment('Consumer Key API');
+            $table->string('consumersecretapikey')->nullable()->comment('Consumer secretAPIKey');
+            $table->string('instagram_access_token')->nullable()->comment('instagram_access_token');
             $table->string('hashtags')->default('#india')->comment('Hashtags Twitter');
-
+            $table->string('app_id')->default('AppID')->comment('AppID Facebook');
+            $table->string('appsecret')->default('AppSecret')->comment('AppSecret Facebook');
+            $table->string('username')->default('zuck')->nullable()->comment('Facebook Username');
             $table->integer('user_id')->unsigned()->comment('User ID');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 

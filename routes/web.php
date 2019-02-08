@@ -61,8 +61,14 @@ Route::group(array('middleware' => 'revalidate','middleware' => 'auth'), functio
 
     Route::post('/dashboard/connect_to_instagram', 'DashboardController@connect_to_instagram')->name('connect_to_instagram');
 
-    Route::post('instagram/update', 'DashboardController@update_instagram');
+    Route::post('instagram/update', 'DashboardController@update_instagram')->name('update_instagram');
 
+
+    Route::post('dashboard/updated_token', 'DashboardController@instagram_feeds')->name('updated_instagram_token');
+
+
+    Route::get('/instagram_feeds', 'DashboardController@instagram_feeds')->name('instagram_feeds');
+   
 
     //feeds Routes 
 
@@ -153,11 +159,10 @@ Auth::routes();
 
 Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
 
-Route::get('/social_login', 'DashboardController@social_login')->name('social_login');
-
-
 Route::get('/twitter_feeds', 'DashboardController@twitter_feeds')->name('twitter_feeds');
 
 Route::get('/facebook_feeds', 'DashboardController@facebook_feeds')->name('facebook_feeds');
 
-Route::get('/instagram_feeds', 'DashboardController@instagram_feeds')->name('instagram_feeds');
+Route::post('/instagram_feeds', 'DashboardController@instagram_feeds');
+
+Route::post('/facebook_feeds', 'DashboardController@facebook_feeds');

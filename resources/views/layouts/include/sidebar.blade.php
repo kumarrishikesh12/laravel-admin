@@ -31,17 +31,6 @@
                     </li>
 
 
-                     <li class="{{ Request::is('sociallogin')?'selected':'' }}">
-                        <a href="{{ url('social_login') }}">
-                            <span class="has-icon">
-                                <i class="icon-settings"></i>
-                            </span>
-                            <span class="nav-title">{!! trans('user/sidebar.sociallogin') !!}</span>
-                        </a>
-                     </li>
-
-
-
                     <li class="{{ Request::is('twitter')?'selected':'' }}">
                         <a href="{{ url('twitter_feeds') }}">
                             <span class="has-icon">
@@ -72,17 +61,6 @@
                     </li>
 
 
-<!--  
-                    <li class="{{ Request::is('all_feeds')?'selected':'' }}">
-                        <a href="{{ url('all_feeds') }}">
-                            <span class="has-icon">
-                                <i class="icon-feeds"></i>
-                            </span>
-                            <span class="nav-title">{!! trans('user/sidebar.all_feeds') !!}</span>
-                        </a>
-                    </li>
-
-                     -->
 
 
 

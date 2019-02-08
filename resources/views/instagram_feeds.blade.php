@@ -39,49 +39,126 @@
 .container {
   padding: 2px 16px;
 }
+
+a{
+
+ color:#ff8507;
+ text-decoration: none;
+}
+
+
+
+
 </style>
 
-
-<!-- END: .main-heading -->
-<!-- BEGIN .main-content -->
-
 <?php 
-
 
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
 curl_setopt($ch, CURLOPT_SSLVERSION, 3);
 
-
 ?>
-
-
-
 <div class="main-content">
 
-<!-- #30 -->   
+<?php 
+//if($next_page['exist_next_page'] === true ){
+//display pagination if data exist and not empty
 
-<?php
+//echo $next_page['exist_next_page'];
+//echo $next_page['end_cursor'];
+//die();
 
-
- if(!empty($next_url_api)){ 
-
-     //instagram pagination link    //print_r($next_url_api);
-
- ?>
-    
-
-<!-- <ul class="pagination">
-  <li class="page-item"><a class="page-link" href="#1">1</a></li>
-  <li class="page-item"><a class="page-link" href="#2">2</a></li>
-  <li class="page-item"><a class="page-link" href="#3">3</a></li>
-</ul>  
- -->
+//}
+?>
 
 
-<?php
+
+
+
+<?php 
+
+if(isset($insta_array) && !empty($insta_array) ) {
+//if data exist in Instas, print$
+
+
+      $limit = 18; //page per limit
+
+      for ($i=$limit; $i >= 0; $i--) {
+
+         if(array_key_exists($i,$insta_array["graphql"]["hashtag"]["edge_hashtag_to_media"]["edges"]) ){
+
+       $latest_array = $insta_array["graphql"]["hashtag"]["edge_hashtag_to_media"]["edges"][$i]["node"];
+ 
+
+      $instas = [
+        "image"=> $latest_array['display_url'],
+        "thumbnail"=> $latest_array['thumbnail_src'],
+        "instagram_id"=> $latest_array['id'],
+        "link"=>"https://www.instagram.com/p/".$latest_array['shortcode'],
+        "caption"=> $latest_array['edge_media_to_caption']['edges'][0]["node"]["text"],
+        "date"=> $latest_array['taken_at_timestamp']
+      
+      ];
+
+       //print_r($instas); 
+       //echo "</br>";
+       //die(); 
+
   }
+
+
+
+?>
+
+ <div class="card">
+      <div class="card-body">
+
+
+
+       <p><b> Instagram Post: </b>
+        <?php  
+
+          echo $caption = $instas['caption']; 
+         
+           $view_link = $instas['link']; 
+          echo "<a href=".$view_link."> View Post  </a>";
+           
+         ?>
+       </p>
+
+
+        <p><b>  Post Date: </b>
+        <?php  
+
+          $unix_date = $instas['date']; 
+          echo $date = date('M j, Y', $unix_date);
+
+         ?>
+       </p>    
+
+
+       <p>
+
+        <img src="<?php echo $instas['image']; ?>" alt="profie_pic" style="width:100%"  >
+
+       </p>
+
+
+
+   </div>
+</div>
+
+
+
+
+
+<?php
+
+  } //foreach 
+
+} //main if
+
 ?>
 
 
@@ -91,11 +168,12 @@ curl_setopt($ch, CURLOPT_SSLVERSION, 3);
 
 <?php
 
-if ($next_url_api) {
+/*
 
-}
+if(isset($instas) && !empty($instas)) {
+//if data exist in Instas, print
 
- foreach( $instas['data'] as $key => $value ){
+ foreach( $instas['data'] as $key => $value ) {
 
 ?>
         
@@ -248,10 +326,6 @@ if ($next_url_api) {
 
 
 
-
-          
-
-
            <p><b> Uploaded Date: </b> 
            <?php 
 
@@ -280,16 +354,6 @@ if ($next_url_api) {
           
 
 
-
-
-
-
-
-           
-
-
-
-
           </div> <!--  Div Class Container Close -->    
          </div>
         </div>
@@ -298,33 +362,43 @@ if ($next_url_api) {
 
 <?php       
 
- }
+ }//foreach end
+
+}//if end
 
 
 
+*/
 ?>
 
 
-<!--
-<div class="card">
-      <div class="card-body">
-
-        <? //if( $next_url != "" ): ?>
-            <a href="instagram_feeds?next_url=<?php //echo $next_url ?>">More</a>
-            <? //endif;?>
 
 
-    </div>
-</div>
 
 
--->
+
+<?php
+
+ //if(!empty($next_url_api)){ 
+
+//instagram pagination link    //print_r($next_url_api);
+  
+/*<ul class="pagination">
+  <li class="page-item"><a class="page-link" href="#1">1</a></li>
+  <li class="page-item"><a class="page-link" href="#2">2</a></li>
+  <li class="page-item"><a class="page-link" href="#3">3</a></li>
+</ul>  
+*/ 
+
+ // }
+?>
 
 
- 
 
 
- <?php
+
+
+<?php
  /*
     
 
@@ -341,13 +415,9 @@ if ($next_url_api) {
                  $created_time =   $instas['data'][$key] = $value['created_time']; //convert to time
 
 
-               
-        
-
-
-
 */
 ?>
+
 
 
 
@@ -357,8 +427,6 @@ $(document).ready(function(){
   $('[data-toggle="tooltip"]').tooltip();   
 });
 </script>
-
-
 
 </div>
 <!-- END: .main-content -->

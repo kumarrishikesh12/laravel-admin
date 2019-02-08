@@ -41,33 +41,22 @@
 }
 </style>
 
-
-<!-- END: .main-heading -->
-<!-- BEGIN .main-content -->
-
 <?php 
-
 
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
 curl_setopt($ch, CURLOPT_SSLVERSION, 3);
 
-
 ?>
 
-
-
 <div class="main-content">
-<!-- #30 -->   
-<!--
-     #  http://jsonviewer.stack.hu/
-     #  http://blog.netgloo.com/2015/08/16/php-getting-latest-tweets-and-displaying-them-in-html/
- -->
 
 <?php
 
- foreach( $tweets['statuses'] as $key => $value ){
+if(isset($tweets) && !empty($tweets)){ 
+
+ foreach( $tweets['statuses'] as $key => $value ) {
 
 ?>
         
@@ -251,16 +240,14 @@ curl_setopt($ch, CURLOPT_SSLVERSION, 3);
 
  }
 
+}
+
 ?>
 
 
 
 
-<script>
-$(document).ready(function(){
-  $('[data-toggle="tooltip"]').tooltip();   
-});
-</script>
+
 
 
 
@@ -285,8 +272,13 @@ $(document).ready(function(){
 
 -->
 
-
-
 </div>
+
+<script>
+$(document).ready(function(){
+  $('[data-toggle="tooltip"]').tooltip();   
+});
+</script>
+
 <!-- END: .main-content -->
 @endsection

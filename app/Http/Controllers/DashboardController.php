@@ -54,9 +54,38 @@ class DashboardController extends Controller
    //----------------------- Twitter ------------------------------------
 
 
-    public function connecttotwitter(Request $request)
-    {
-        return view('twitter_credential');
+    public function connecttotwitter(Request $request) {
+
+        //login user_details
+        $user = User::findOrFail(Auth::user()->id);
+        $social_webname = 'twitter';
+
+        if(isset($user) && !empty($user)){
+
+        $user_id = $user->id;//id
+
+        $twitter_data = UsersSocialCredentials::where('social_webname','=',$social_webname)->Where('user_id',$user_id)->first(); //data
+
+        $accesstoken = $twitter_data['accesstoken'];
+        $accesstokensecret = $twitter_data['accesstokensecret'];
+        $consumerkeyapikey = $twitter_data['consumerkeyapikey'];
+        $consumersecretapikey = $twitter_data['consumersecretapikey'];
+
+            if(!empty($accesstoken) && !empty($accesstokensecret) && !empty($consumerkeyapikey) && !empty($consumersecretapikey) ){
+
+               //$this->update_twitter();
+
+         $user_exist = DB::select( DB::raw("SELECT * FROM userssocial_credentials WHERE user_id = '$user_id' and social_webname = '$social_webname' ") ); 
+
+                return view('twitter_credential_update')->with('user_exist',$user_exist);
+
+            }else{
+
+                 return view('twitter_credential');
+            }
+
+        }
+
     }
 
 
@@ -112,18 +141,22 @@ class DashboardController extends Controller
          $socialCredentials->save();   //insert
             
 
-            return redirect()->back()->with('success_message', trans('user/twitter.successfullyChanged'));
+        //return redirect()->back()->with('success_message', trans('user/twitter.successfullyChanged'));
+
+           $user_exist = DB::select( DB::raw("SELECT * FROM userssocial_credentials WHERE user_id = '$user_id' and social_webname = '$social_webname' ") );  
+
+          return view('twitter_credential_update')->with('user_exist',$user_exist)->with('success_message', trans('user/twitter.successfullyChanged'));
+
 
             }else{
-
+              
               //print_r("$user_exist"); // user details exist update 
-             //die();
+              //die();
+                 Session::flash('success_message', "Your Twitter Details is AlreadyExist, Please Update it.");
 
-                Session::flash('success_message', "Your Twitter Details is AlreadyExist, Please Update it.");
+                 return view('twitter_credential_update')->with('user_exist',$user_exist);
 
-                return view('twitter_credential_update')->with('user_exist',$user_exist);
-
-            }
+            } 
 
     }
 
@@ -182,12 +215,14 @@ class DashboardController extends Controller
                 ]);
 
 
-                //Session::flash('success_message', "Your Twitter Details is updated successfully.");
+                
+                $user_exist = DB::select( DB::raw("SELECT * FROM userssocial_credentials WHERE user_id = '$user_id' and social_webname = '$social_webname' ") );
 
+                Session::flash('success_message', "Your Twitter Details is updated successfully.");
 
-                 return redirect()->back()->with('success_message', trans('user/twitter.successfullyChanged'));
+               //return redirect()->back()->with('user_exist',$user_exist)->with('success_message', trans('user/twitter.successfullyChanged'));
 
-            //return view('twitter_credential_update')->with('user_exist',$user_exist);
+        return view('twitter_credential_update')->with('user_exist',$user_exist)->with('success_message', trans('user/twitter.successfullyChanged'));
 
 
             }
@@ -205,7 +240,35 @@ class DashboardController extends Controller
 
     public function connecttofacebook(){
 
-        return view('facebook_credential');
+        //login user_details
+        $user = User::findOrFail(Auth::user()->id);
+        $social_webname = 'facebook';
+
+        if(isset($user) && !empty($user)){
+
+        $user_id = $user->id;//id
+
+        $facebook_data = UsersSocialCredentials::where('social_webname','=',$social_webname)->Where('user_id',$user_id)->first(); //data
+
+         $accesstoken = $facebook_data['app_id'];
+         $accesstokensecret = $facebook_data['appsecret'];
+         $username = $facebook_data['username'];
+
+        if(!empty($accesstoken) && !empty($accesstokensecret) && !empty($username)){
+
+          //$this->update_facebook();
+
+         $user_exist = DB::select( DB::raw("SELECT * FROM userssocial_credentials WHERE user_id = '$user_id' and social_webname = '$social_webname' ") ); 
+
+                return view('facebook_credential_update')->with('user_exist',$user_exist);
+
+            }else{
+
+                 return view('facebook_credential');
+            }
+        }
+
+
     }
 
 
@@ -213,11 +276,9 @@ class DashboardController extends Controller
     public function connect_to_facebook(Request $request){
 
         $rules = array(
-            'accesstoken' => 'required',
-            'accesstokensecret' => 'required',
-            'consumerkeyapikey' => 'required',
-            'consumersecretapikey' => 'required'
-
+            'facebook_appid' => 'required',
+            'facebook_appsecret' => 'required',
+            'facebook_username' => 'required',
         );
 
          //login user
@@ -233,10 +294,9 @@ class DashboardController extends Controller
         
 
             $social_webname = 'facebook';
-            $accesstoken = $request->accesstoken;
-            $accesstokensecret = $request->accesstokensecret;
-            $consumerkeyapikey = $request->consumerkeyapikey;
-            $consumersecretapikey = $request->consumersecretapikey;
+            $app_id = $request->facebook_appid;
+            $appsecret_id = $request->facebook_appsecret;
+            $facebook_username = $request->facebook_username;
             $user_id = $user->id;
 
 
@@ -253,15 +313,19 @@ class DashboardController extends Controller
          $socialCredentials = new UsersSocialCredentials;
 
          $socialCredentials->social_webname = $social_webname;
-         $socialCredentials->accesstoken = $accesstoken;
-         $socialCredentials->accesstokensecret = $accesstokensecret;
-         $socialCredentials->consumerkeyapikey = $consumerkeyapikey;
-         $socialCredentials->consumersecretapikey = $consumersecretapikey;
-         $socialCredentials->user_id = $user_id;
+         $socialCredentials->app_id = $app_id;
+         $socialCredentials->appsecret = $appsecret_id;
+         $socialCredentials->username = $facebook_username;
+         $socialCredentials->user_id = $user_id;         
          $socialCredentials->save();   //insert
-            
+                
 
-            return redirect()->back()->with('success_message', trans('user/facebook.successfullyChanged'));
+            $user_exist = DB::select( DB::raw("SELECT * FROM userssocial_credentials WHERE user_id = '$user_id' and social_webname = '$social_webname' ") );
+
+             return view('facebook_credential_update')->with('user_exist',$user_exist)->with('success_message', trans('user/facebook.successfullyChanged'));
+
+
+            //return redirect()->back()->with('success_message', trans('user/facebook.successfullyChanged'));
 
             }else{
 
@@ -283,12 +347,11 @@ class DashboardController extends Controller
     public function update_facebook(Request $request){ 
 
      $rules = array(
-            'accesstoken' => 'required',
-            'accesstokensecret' => 'required',
-            'consumerkeyapikey' => 'required',
-            'consumersecretapikey' => 'required'
-
-        );
+            'facebook_appid' => 'required',
+            'facebook_appsecret' => 'required',
+            'facebook_hashtags' => 'required',
+            'facebook_username' => 'required',
+        );  
 
         //login user
         $user = User::findOrFail(Auth::user()->id);
@@ -298,14 +361,16 @@ class DashboardController extends Controller
         $validator = Validator::make($data, $rules);
 
         if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
+
+             //return view('facebook_credential_update')->withErrors($validator)->withInput();
+             return redirect()->back()->withErrors($validator)->withInput();
         }
             
             $social_webname = 'facebook';
-            $accesstoken = $request->accesstoken;
-            $accesstokensecret = $request->accesstokensecret;
-            $consumerkeyapikey = $request->consumerkeyapikey;
-            $consumersecretapikey = $request->consumersecretapikey;
+            $app_id = $request->facebook_appid;
+            $app_secret = $request->facebook_appsecret;
+            $facebookhashtags = $request->facebook_hashtags;
+            $facebook_username = $request->facebook_username;
             $uid = $request->uid; //id
             $user_id = $request->user_id;
     
@@ -323,16 +388,22 @@ class DashboardController extends Controller
                 ->where('id', $uid)
                 ->update([
 
-                    'accesstoken' => $accesstoken,
-                     'accesstokensecret' => $accesstokensecret,
-                      'consumerkeyapikey' => $consumerkeyapikey,
-                       'consumersecretapikey' => $consumersecretapikey,
+                    'app_id' => $app_id,
+                     'appsecret' => $app_secret,
+                       'hashtags' => $facebookhashtags,
+                        'username' => $facebook_username,
                        
                 ]);
 
 
 
-                 return redirect()->back()->with('success_message', trans('user/twitter.successfullyChanged'));
+                $user_exist = DB::select( DB::raw("SELECT * FROM userssocial_credentials WHERE user_id = '$user_id' and social_webname = '$social_webname' ") );
+
+                 Session::flash('success_message', "Your facebook Details is updated successfully.");
+
+                return view('facebook_credential_update')->with('user_exist',$user_exist)->with('success_message', trans('user/facebook.successfullyChanged'));
+
+                 //return redirect()->back()->with('success_message', trans('user/facebook.successfullyChanged'));
 
             }
 
@@ -346,9 +417,37 @@ class DashboardController extends Controller
 
 
 
-    public function connecttoinstagram()
-    {
-        return view('instagram_credential');
+    public function connecttoinstagram(){
+
+        //login user_details
+        $user = User::findOrFail(Auth::user()->id);
+        $social_webname = 'instagram';
+
+        if(isset($user) && !empty($user)){
+
+        $user_id = $user->id;//id
+
+        $instagram_data = UsersSocialCredentials::where('social_webname','=',$social_webname)->Where('user_id',$user_id)->first(); //data
+
+            $accesstoken = $instagram_data['accesstoken'];
+            $accesstokensecret = $instagram_data['accesstokensecret'];
+
+          if(!empty($accesstoken) && !empty($accesstokensecret) ){
+
+          //$this->update_instagram();  
+
+          $user_exist = DB::select( DB::raw("SELECT * FROM userssocial_credentials WHERE user_id = '$user_id' and social_webname = '$social_webname' ") ); 
+
+            return view('instagram_credential_update')->with('user_exist',$user_exist);
+
+        }else{
+
+                 return view('instagram_credential');
+            }
+
+       }
+
+
     }
       
 
@@ -357,8 +456,7 @@ class DashboardController extends Controller
         $rules = array(
             'accesstoken' => 'required', // CLIENT ID
             'accesstokensecret' => 'required'  // CLIENT SECRET ID
-            //'consumerkeyapikey' => 'required',
-            //'consumersecretapikey' => 'required'
+
 
         );
 
@@ -377,8 +475,6 @@ class DashboardController extends Controller
             $social_webname = 'instagram';
             $accesstoken = $request->accesstoken;  // CLIENT ID
             $accesstokensecret = $request->accesstokensecret;  // CLIENT SECRET ID
-            //$consumerkeyapikey = $request->consumerkeyapikey;
-            //$consumersecretapikey = $request->consumersecretapikey;
             $user_id = $user->id;
 
         $user_exist = DB::select( DB::raw("SELECT * FROM userssocial_credentials WHERE user_id = '$user_id' and social_webname = '$social_webname' ") );  
@@ -394,13 +490,16 @@ class DashboardController extends Controller
          $socialCredentials->social_webname = $social_webname;
          $socialCredentials->accesstoken = $accesstoken;  // CLIENT  ID
          $socialCredentials->accesstokensecret = $accesstokensecret; // CLIENT SECRET ID
-         //$socialCredentials->consumerkeyapikey = $consumerkeyapikey;
-         //$socialCredentials->consumersecretapikey = $consumersecretapikey;
          $socialCredentials->user_id = $user_id;
          $socialCredentials->save();   //insert
             
 
-            return redirect()->back()->with('success_message', trans('user/instagram.successfullyChanged'));
+         $user_exist = DB::select( DB::raw("SELECT * FROM userssocial_credentials WHERE user_id = '$user_id' and social_webname = '$social_webname' ") );  
+
+        //return redirect()->back()->with('success_message', trans('user/instagram.successfullyChanged'));
+
+         return view('instagram_credential_update')->with('user_exist',$user_exist)->with('success_message', trans('user/instagram.successfullyChanged'));
+
 
             }else{
 
@@ -420,10 +519,8 @@ class DashboardController extends Controller
 
      $rules = array(
             'accesstoken' => 'required',  // CLIENT ID
-            'accesstokensecret' => 'required' // CLIENT SECRET ID
-            //'consumerkeyapikey' => 'required',
-            //'consumersecretapikey' => 'required'
-
+            'accesstokensecret' => 'required', // CLIENT SECRET ID
+            'instagram_hashtags' => 'required' // CLIENT SECRET ID
         );
 
         //login user
@@ -440,8 +537,7 @@ class DashboardController extends Controller
             $social_webname = 'instagram';
             $accesstoken = $request->accesstoken;  // CLIENT ID
             $accesstokensecret = $request->accesstokensecret; // CLIENT SECRET ID
-            //$consumerkeyapikey = $request->consumerkeyapikey;
-            //$consumersecretapikey = $request->consumersecretapikey;
+            $instagram_hashtags = $request->instagram_hashtags; //hashtags
             $uid = $request->uid; //id
             $user_id = $request->user_id;
     
@@ -459,14 +555,20 @@ class DashboardController extends Controller
 
                     'accesstoken' => $accesstoken, //CLIENT ID
                      'accesstokensecret' => $accesstokensecret, //CLIENT SECRET ID
-                      //'consumerkeyapikey' => $consumerkeyapikey,
-                      //'consumersecretapikey' => $consumersecretapikey,
+                      'hashtags' => $instagram_hashtags,  //hashtags
                        
                 ]);
 
 
+                 //return redirect()->back()->with('success_message', trans('user/instagram.successfullyChanged'));
 
-                 return redirect()->back()->with('success_message', trans('user/instagram.successfullyChanged'));
+                $user_exist = DB::select( DB::raw("SELECT * FROM userssocial_credentials WHERE user_id = '$user_id' and social_webname = '$social_webname' ") );
+
+
+                Session::flash('success_message', "Your Instagram Details Update successfully.");
+
+                return view('instagram_credential_update')->with('user_exist',$user_exist)->with('success_message', trans('user/instagram.successfullyChanged'));
+
 
             }
 
@@ -475,11 +577,7 @@ class DashboardController extends Controller
 
 
 
-
-
-
-
-
+ 
 
 
 
@@ -497,7 +595,19 @@ class DashboardController extends Controller
 
          $user_hashtags = DB::select( DB::raw("SELECT hashtags FROM userssocial_credentials WHERE user_id = '$user->id' and social_webname = '$social_webname' ") );
 
+         //$user_hashtags = UsersSocialCredentials::where('social_webname','=',$social_webname)->Where('user_id',$user_id)->first();
+
+         if(empty($user_hashtags)){
+
+            //if not get hashtags show blank  tweeter page
+
+            return view('twitter_feeds');
+
+         }else{
+
+
           $hashtags_data = $user_hashtags['0']->hashtags; 
+
 
          if(!empty($hashtags_data)){
 
@@ -507,7 +617,7 @@ class DashboardController extends Controller
             $hashtag_search = '';
          }
 
-
+       }    
         
      
      $user_exist = DB::select( DB::raw("SELECT * FROM userssocial_credentials WHERE user_id = '$user->id' and social_webname = '$social_webname' ") );
@@ -520,6 +630,7 @@ class DashboardController extends Controller
 
       if(!empty($user_exist)) { 
         //data exist
+
 
             $tw_next_url ='';
 
@@ -572,138 +683,361 @@ class DashboardController extends Controller
   //--------------------- Start Instagram Feeds GEt's ----------------------------
 
 
-
-
-  public function instagram_feeds(Request $request){  
-
-
-    //http://instagram.com/oauth/authorize/?client_id=2907a5d9495a437ba75097b2a9414bfd&redirect_uri=http://localhost/laravel-admin/twitter_feeds&response_type=token
-
-    //http://instagram.com/oauth/authorize/?client_id=YOURCLIENTIDHERE&redirect_uri=HTTP://YOURREDIRECTURLHERE.COM&response_type=token
-
-
-    // Redirect URl //Localhost
-     $link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']; 
-
-
-     $client_id  = '2907a5d9495a437ba75097b2a9414bfd';
-     $client_secret_id  = 'f3bfbb47b0974c108c0ce0b8247732d8';
-
-      $access_token_gen = 'http://instagram.com/oauth/authorize/?client_id='.$client_id.'&redirect_uri='.$link.'&response_type=token'; 
     
-
-     //$access_token = file_get_contents($access_token_gen);
-    
-
-    //http://localhost/laravel-admin/twitter_feeds#access_token=1942978854.2907a5d.70172592a0ff4d85bde6542405843b9d
+ public function instagram_feeds(Request $request){  
 
 
-      $photo_count = 10; 
-      $access_token = '1942978854.2907a5d.5986445cf4574831a2bdd53e14025d3e';
-      $json_link = "https://api.instagram.com/v1/users/self/media/recent/?";
-      $json_link.= "access_token={$access_token}&count={$photo_count}&max_id";
+
+        //https://www.instagram.com/kumarrishikesh12/?__a=1     //user_profile
+        //https://www.instagram.com/explore/tags/dhoni/?__a=1  //HashTags_Profile
+        //https://www.instagram.com/explore/tags/india/?hl=en  //View
+
+         //login user
+         $user = User::findOrFail(Auth::user()->id);
+         $user_id = $user->id; //get login user id
+         $social_webname = 'instagram';  // Social webname
+         $link = env('APP_URL').'/laravel-admin/instagram_feeds';  //http://localhost/laravel-admin/instagram_feeds
+        
+         $instagram_data = UsersSocialCredentials::where('social_webname','=',$social_webname)->Where('user_id',$user_id)->first();
+
+         if(isset($instagram_data) && !empty($instagram_data) && !empty($instagram_data['accesstoken']) && !empty($instagram_data['accesstokensecret']) ){ //if data found
+         
+         $client_id = $instagram_data['accesstoken'];
+         $client_secret = $instagram_data['accesstokensecret'];
+         $hashtags = $instagram_data['hashtags'];
+         $hashtags = str_replace('#', '', $hashtags);
+         
+
+         
+         $access_token_url = 'http://instagram.com/oauth/authorize/?client_id='.$client_id.'&redirect_uri='.$link.'&response_type=token';
+         
+
+         $tags_json_link = "https://www.instagram.com/explore/tags/".$hashtags."/?__a=1";
+        
+         //$tags_json_link = "https://www.instagram.com/explore/tags/india/?__a=1"; //&page=10
+
+         $arrContextOptions=array(
+            "ssl"=>array(
+            "verify_peer"=>false,
+            "verify_peer_name"=>false,
+           ),
+         ); 
 
 
-      $json = file_get_contents($json_link);
+        $instas = file_get_contents($tags_json_link, false, stream_context_create($arrContextOptions));
+          //dd($instas);
+          //echo "<pre>";
+          //print_r($instas);
+          //die();
 
-      $instas = json_decode($json, true);
-
-      //die('');
-
-     foreach ($instas['pagination'] as $page) {
-       
-        //print_r($page);   //['next_max_id'];  //['next_url'];
-
-      $next_max_id_data = explode('https://',trim($page));
-      //$next_max_id =  $next_max_id_data[0]; 
-
-      preg_match_all('#\bhttps?://[^,\s()<>]+(?:\([\w\d]+\)|([^,[:punct:]\s]|/))#', $page, $match);
+         $insta_array = json_decode($instas, TRUE);  //gives array of that json
+         $insta_array_url = json_decode($instas, TRUE);
 
 
-        if (!empty($match)) {
+         $limit = 18; //page per limit
 
-            $next_url_api = implode(" ",$match[0]);  //url
+         for ($i=$limit; $i >= 0; $i--) {
 
-                if(!empty($next_url_api)){
+         if(array_key_exists($i,$insta_array["graphql"]["hashtag"]["edge_hashtag_to_media"]["edges"])){
 
-                  $json = file_get_contents($next_url_api);
-                  $next_url_api = json_decode($json, true);
+         $next_url_array = $insta_array["graphql"]["hashtag"]["edge_hashtag_to_media"]["page_info"];
+ 
+         $next_page = [
 
-                }else{
+         "exist_next_page"=> $next_url_array['has_next_page'],
+         "end_cursor"=> $next_url_array['end_cursor']
+      
+        ];
 
-                    $json = "No More Data Found !!";
+         //print_r($instas_next_page); 
+         //die(); 
 
-                }
+  }
 
-
-        }
-
-
-        if (!empty($next_max_id_data)) {
-
-           $next_max_id =  $next_max_id_data[0]; 
-
-        }
-
-      }
-
-
-         //$next_url_api
-        //echo $next_url_api;
-        //die('');
-
-      //instagram pagination link
-
+}
 
 
         Session::flash('success_message', "Your Instagram Details Found");
 
-        return view('instagram_feeds')->with('instas',$instas)->with('next_url_api',$next_url_api);
+        return view('instagram_feeds')->with('instas',$instas)->with('insta_array',$insta_array)->with('next_page',$next_page);
+
+     
+  }//if closed instagram_data
+
+else{//else Part  
 
 
-  }
+        if ($instagram_data['accesstoken'] === NULL && $instagram_data['accesstokensecret'] === NULL ) {
+            
+            //if don't get access_token from database then redirect without data
+            //echo "if don't get access_token from database then redirect without data";
+            
+            return view('instagram_feeds')->with('instagram_data',$instagram_data);
+         }
+
+ 
+     } //end else
+
+           //return view('instagram_feeds')->with('instas',$instas)->with('next_url_api',$next_url_api);
+ 
+
+}// function closed
+
 
 
 
 
    //--------------------- Start Facebook Feeds GEt's -----------------------------------
 
+    //https://www.sammyk.me/access-token-handling-best-practices-in-facebook-php-sdk-v4
+
 
   public function facebook_feeds(Request $request){ 
 
+       
 
-            $profile_id = '100004914815943';
-            $app_id = "606343186475644";
-            $app_secret = "aab3203d2fee6c0eb72aece9d986e201";
-            //$authToken = file_get_contents("https://graph.facebook.com/oauth/access_token?grant_type=client_credentials&client_id={$app_id}&client_secret={$app_secret}");
-
-            //$link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']; 
-  
-
-             //$authToken = "https://graph.facebook.com/oauth/access_token?client_id=".$app_id."&redirect_uri=".$link."&client_secret=".$app_secret;
+         //login user
+         $user = User::findOrFail(Auth::user()->id);
+         $user_id = $user->id; //get login user id
+         $social_webname = 'facebook';  // Social webname
+         //$link = env('APP_URL').'/laravel-admin/facebook_feeds';  //http://localhost/laravel-admin/facebook_feeds
 
 
-            //Access Token FB
-            //$authToken ="EAAInd0Y96nwBAMvOpLIOokrilyETbZAQ7RzhlS4vZCZBp2aP3LtCZAws2d6SLCoKsrne1kTplPxltOupUXV41qrB7vtqtVUoVZAZAWZB3lg2EewIDwhVousvyqVb4Kaw2r9FSH6V4ZCshUkuxfq7s1iynWGcexgwB8crwNXwT9My4AZDZD";
+    $facebook_data = UsersSocialCredentials::where('social_webname','=',$social_webname)->Where('user_id',$user_id)->first();
+
+    if(isset($facebook_data) && !empty($facebook_data)  &&  !empty($facebook_data['app_id']) && !empty($facebook_data['appsecret']) ){ //if data found
 
 
-            //echo require_once __DIR__ . '/vendor/autoload.php'; // change path as needed
+         $client_id = $facebook_data['app_id'];
+         $client_secret = $facebook_data['appsecret'];
+         
+
+
+
+         
+          $access_token_url = 'https://graph.facebook.com/oauth/access_token?grant_type=client_credentials&client_id='.$client_id.'&client_secret='.$client_secret;
+
+         //$authToken = file_get_contents("https://graph.facebook.com/oauth/access_token?grant_type=client_credentials&client_id={$app_id}&client_secret={$app_secret}");
+
+
+         $arrContextOptions=array(
+            "ssl"=>array(
+            "verify_peer"=>false,
+            "verify_peer_name"=>false,
+          ),
+        
+         ); 
+
+         //access_token and token_type: bearer  
+
+         //$authToken = file_get_contents("https://graph.facebook.com/oauth/access_token?grant_type=client_credentials&client_id={$app_id}&client_secret={$app_secret}");
+
+
+
+           $authToken = file_get_contents($access_token_url, false, stream_context_create($arrContextOptions));
+            
+           $access_token = http_build_query(json_decode($authToken));
+           //access_token=606343186475644%7COBsiJBsp8lm_mtSj63o34UL_4kA&token_type=bearer
+
+
+
+          $authToken = json_decode($authToken, true);
+          $appid_apptoken =  $authToken['access_token']; //App_ID OR Client_ID | Get_App_token            
+          $arr = (explode("|",$appid_apptoken));
+          $app_id = $arr[0]; //App_ID OR Client_ID
+          $app_access_token = $arr[1]; //Get_App_token  
+
+
+         if (!empty($app_access_token)) {  //app_access_token_exist
+
+
+        //Save App_Access_token in db
+         
+         DB::table('userssocial_credentials')
+                ->where('user_id', $user_id)
+                ->where('social_webname',$social_webname)
+                ->update([
+
+                    'accesstoken' => $app_access_token, //facebook_App_access_token 
+                    
+                       
+                ]);
+    
+    $facebook_data = UsersSocialCredentials::where('social_webname','=',$social_webname)->Where('user_id',$user_id)->first();
+
+            $app_id = $facebook_data['app_id'];
+            $app_secret =  $facebook_data['appsecret'];
+            $app_access_token =  $facebook_data['accesstoken'];
+            $hashtags = $facebook_data['hashtags']; 
+            $username = $facebook_data['username']; 
+        
+            //https://www.facebook.com/hashtag/india       
+            //die();
+
+              $options  = array('http' => array('user_agent' => 'some_obscure_browser'));
+              $context  = stream_context_create($options);
+              $fbsite = file_get_contents('https://www.facebook.com/' . $username, false, $context);
+
+
+              $fbIDPattern = '/\"entity_id\":\"(\d+)\"/';
+              if (!preg_match($fbIDPattern, $fbsite, $matches)) {
+               throw new Exception('Unofficial API is broken or user not found');
+             }
+
+                //convert to facebook Number_id
+                $username_id = $matches[1];
+               //$username_id = 'ayushmannkhurrana';
+
+
+
+
+//$json_object = file_get_contents("https://graph.facebook.com/{$username_id}/feed?".http_build_query(json_decode($facebook_data['accesstoken']))."&summary=1&fields=full_picture,message,link,name,likes,comments,description,from,caption,attachments,created_time&limit=20");
+
+//$json_object = file_get_contents("https://graph.facebook.com/{$username_id}/?fields=id,name,first_name,last_name,short_name,email";
+
+//$url = "https://graph.facebook.com/v3.2/{$username_id}/?fields=id,name,first_name,last_name,email,about,birthday,location,link,likes,address,hometown,age_range,feed{story_tags,type}&access_token={$access_token}";
+
+//$url = "https://graph.facebook.com/v3.2/{$username_id}/?feeds=id,name,first_name,last_name,full_picture&access_token={$access_token}";
+
+//$url = "https://graph.facebook.com/{$username_id}/?fields=name,id&access_token={$access_token}"; 
+
+//$url = "https://graph.facebook.com/{$username_id}/?feeds=name,id&access_token={$access_token}"; 
+
+//$json_object = file_get_contents(""? . http_build_query(json_decode($authToken)) . "&summary=1&fields=full_picture,message,link,name,likes,comments,description,from,caption,attachments,created_time&limit=100");
+
+
+
+                $url = "https://graph.facebook.com/{$username_id}/?{$access_token}&summary=1&fields=id,name,first_name,last_name,email,picture,posts"; 
+
+                //die();
+
+                $json_object = file_get_contents($url, false, stream_context_create($arrContextOptions));
+
+                 $facebook_feeds = json_decode($json_object, true);
+                 print_r($facebook_feeds);
+                 die();
+
+
+
+/*
+            
+            $fb = new \Facebook\Facebook([
+              'app_id' => $app_id,
+              'app_secret' => $app_secret,
+              'default_graph_version' => 'v3.2',
+
+            ]);
+            try {
+            $response = $fb->get('/'.$username_id.'/?access_token='.$app_id.'%7C'.$app_access_token.'&token_type=bearer&fields=id,name,first_name,last_name,short_name,name_format,gender,birthday,age_range,email,hometown,location{name},picture{url},link,posts{id,type,name,description,link,full_picture}');
+
+            } catch(Facebook\Exceptions\FacebookResponseException $e) {
+              echo 'Graph returned an error: ' . $e->getMessage();
+              exit;
+            } catch(Facebook\Exceptions\FacebookSDKException $e) {
+              echo 'Facebook SDK returned an error: ' . $e->getMessage();
+              exit;
+            }
+
+             $user = $response->getGraphUser();
+             $fb_user_data = json_decode($user, true);
+                
+              print_r($fb_user_data);  
+             die();
+
+
+*/
+
+             /*
+             if (!empty($fb_next_url)){
+
+                if ($fb_next_url == '1'){
+
+                  $facebook_feeds['data'] = [];
+                 }else{
+
+                 $json_object = file_get_contents($fb_next_url);
+                 $facebook_feeds = json_decode($json_object, true);
+                }
+             }
+             else{
+
+             //$json_object = file_get_contents("https://graph.facebook.com/{$profile_id}/feed"?.http_build_query(json_decode($app_access_token)) . "&summary=1&fields=full_picture,message,link,name,likes,comments,description,from,caption,attachments,created_time&limit=20");
+            
+             $facebook_feeds = json_decode($json_object, true);
+            
+
+             echo $facebook_feeds;
+             die();
+
+             }
+
+             */
+
+             //$fb_user_data = 'hello';
+
+
+             return view('facebook_feeds')->with('fb_user_data',$fb_user_data);
+
+
+
+     }//if closed if token found
+
+   }//if closed facebook_data
+ 
+ else{//Main else Part  
+
+
+        //echo "else part";
+        //die();
+
+        $user = User::findOrFail(Auth::user()->id);
+        $user_id = $user->id; //get login user id or user_id
+        $social_webname = 'facebook';  // Social webname
+
+        $facebook_data = UsersSocialCredentials::where('social_webname','=',$social_webname)->Where('user_id',$user_id)->first();
+
+        if ($facebook_data['accesstoken'] === NULL) {
+            
+            //if don't get access_token from database then redirect without data
+            //echo "if don't get access_token from database then redirect without data";
+            
+            return view('facebook_feeds')->with('facebook_data',$facebook_data);
+
+        }else{//innere_else
+
+            //if get access_token from database then redirect with feeds
+
+             $access_token = $facebook_data['accesstoken'];
+
+            $app_id = $facebook_data['app_id'];
+            $app_secret =  $facebook_data['appsecret'];
+            $authToken = file_get_contents("https://graph.facebook.com/oauth/access_token?grant_type=client_credentials&client_id={$app_id}&client_secret={$app_secret}");
+
+
+            $authToken = json_decode($authToken, true);
+            $appid_apptoken =  $authToken['access_token']; //App_id and client_id
+            
+
+             $arr = (explode("|",$appid_apptoken));
+             $app_id = $arr[0]; //App_id OR CLient_id
+             $app_access_token = $arr[1]; // access_token
+
 
             $fb = new \Facebook\Facebook([
               'app_id' => $app_id,
               'app_secret' => $app_secret,
               'default_graph_version' => 'v3.2',
-             // 'default_access_token' => 'EAAInd0Y96nwBAMvOpLIOokrilyETbZAQ7RzhlS4vZCZBp2aP3LtCZAws2d6SLCoKsrne1kTplPxltOupUXV41qrB7vtqtVUoVZAZAWZB3lg2EewIDwhVousvyqVb4Kaw2r9FSH6V4ZCshUkuxfq7s1iynWGcexgwB8crwNXwT9My4AZDZD', // optional
+              //'default_access_token' => $access_token,
+
             ]);
 
-             $default_access_token = 'EAAInd0Y96nwBAMvOpLIOokrilyETbZAQ7RzhlS4vZCZBp2aP3LtCZAws2d6SLCoKsrne1kTplPxltOupUXV41qrB7vtqtVUoVZAZAWZB3lg2EewIDwhVousvyqVb4Kaw2r9FSH6V4ZCshUkuxfq7s1iynWGcexgwB8crwNXwT9My4AZDZD';
+             $default_access_token = $access_token;
 
 
-            try {
-              // Returns a `Facebook\FacebookResponse` object
-             // $response = $fb->get('/me?fields=id,name', $default_access_token);
+              try {
+            
 
-                 $response = $fb->get('/me?fields=id,first_name,last_name,name,email', $default_access_token);
+            $response = $fb->get('/me?fields=id,name,first_name,last_name,short_name,name_format,gender,birthday,age_range,email,hometown,location{name},picture{url},link,posts{id,type,name,description,link,full_picture}',$default_access_token );
 
             } catch(Facebook\Exceptions\FacebookResponseException $e) {
               echo 'Graph returned an error: ' . $e->getMessage();
@@ -714,56 +1048,24 @@ class DashboardController extends Controller
             }
 
 
-            echo $user = $response->getGraphUser();
+             $user = $response->getGraphUser();
+             $fb_user_data = json_decode($user, true);
+ 
 
-            //echo 'Name: ' . $user['name'];
-            // OR
-            // echo 'Name: ' . $user->getName();
+             $data['fb_data']= $fb_user_data;
+        
 
-
-
-            die();
-
-            /*
-            
-            if (!empty($fb_next_url))
-            {
-                if ($fb_next_url == '1')
-                {
-                    $facebook_feeds['data'] = [];
-                }
-                else
-                {
-                    $json_object = file_get_contents($fb_next_url);
-                    $facebook_feeds = json_decode($json_object, true);
-                }
-            }
-            else
-            {
-                $json_object = file_get_contents("https://graph.facebook.com/{$profile_id}/feed"? . http_build_query(json_decode($authToken)) . "&summary=1&fields=full_picture,message,link,name,likes,comments,description,from,caption,attachments,created_time&limit=100");
-                $facebook_feeds = json_decode($json_object, true);
-            } 
-
-            */
-  
-     return view('facebook_feeds');
-
-  }
+             return view('facebook_feeds')->with('fb_user_data',$fb_user_data)->withdata($data);
 
 
 
+        }//inner_else_close
 
 
+  } //main_else_part_end
 
+}//funtion_end
 
-//-------------------------- Login With Social_Site ----------------------------------------
-
-
-  public function social_login(Request $request){  
-
-     return view('social_login');
-
-  }
 
 
 

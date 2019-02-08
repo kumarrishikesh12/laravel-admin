@@ -39,26 +39,53 @@
    
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                             <div class="form-group">
-                                <input type="text" class="form-control" id="facebookaccesstoken" name="accesstoken" placeholder="Access Token*" value="{{ $user->accesstoken }}" />
+                                <input type="text" class="form-control" id="facebookappid" name="facebook_appid" placeholder="App ID*" value="{{ $user->app_id }}" />
                             </div>
                         </div>
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                             <div class="form-group">
-                                <input type="text" class="form-control" id="facebookaccesstokensecret" name="accesstokensecret" placeholder="Access Token Secret*" value="{{ $user->accesstokensecret }}" />
+                                <input type="text" class="form-control" id="facebookappsecret" name="facebook_appsecret" placeholder="App Secret ID*" value="{{ $user->appsecret }}" />
                             </div>
                         </div>
 
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                             <div class="form-group">
-                                <input type="text" class="form-control" id="facebookconsumerkeyapikey" name="consumerkeyapikey" placeholder="ConsumerKey API Key*" value="{{ $user->consumerkeyapikey }}" />
+                                <input type="text" class="form-control" id="facebookhashtags" name="facebook_hashtags" placeholder="Hashtag Keyword*" value="{{ $user->hashtags }}" />
                             </div>
                         </div>
 
-                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                             <div class="form-group">
-                                <input type="text" class="form-control" id="facebookconsumersecretapi" name="consumersecretapikey" placeholder="ConsumerSecret APISecret Key*" value="{{ $user->consumersecretapikey }}" />
+                                <input type="text" class="form-control" id="facebookusername" name="facebook_username" placeholder="Facebook Username* ex: zuck " value="{{ $user->username }}" />
                             </div>
                         </div>
+
+
+
+    <?php 
+
+
+     // Redirect URl //Localhost
+     $link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']; 
+
+     $client_id  =  $user->app_id;
+     $client_secret_id  = $user->appsecret;
+
+     
+    //$authToken = file_get_contents("https://graph.facebook.com/oauth/access_token?grant_type=client_credentials&client_id={$app_id}&client_secret={$app_secret}");
+
+    //$access_token_gen = 'https://graph.facebook.com/oauth/access_token?grant_type=client_credentials&client_id='.$client_id.'&client_secret='.$client_secret_id;
+
+
+      $default_access_token = 'https://www.facebook.com/v3.2/dialog/oauth?response_type=token&display=popup&client_id='.$client_id.'&redirect_uri='.$link;
+
+
+
+     ?> 
+
+
+
+
 
                     </div>
                     <div class="actions clearfix">
