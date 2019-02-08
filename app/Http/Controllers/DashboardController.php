@@ -595,12 +595,12 @@ class DashboardController extends Controller
 
          $user_hashtags = DB::select( DB::raw("SELECT hashtags FROM userssocial_credentials WHERE user_id = '$user->id' and social_webname = '$social_webname' ") );
 
-         //$user_hashtags = UsersSocialCredentials::where('social_webname','=',$social_webname)->Where('user_id',$user_id)->first();
+         //print_r($user_hashtags);
+         //die();
 
          if(empty($user_hashtags)){
 
             //if not get hashtags show blank  tweeter page
-
             return view('twitter_feeds');
 
          }else{
@@ -614,7 +614,7 @@ class DashboardController extends Controller
             $hashtag_search = $hashtags_data; // My Search Tag Add Dynamic Here
 
          }else{
-            $hashtag_search = '';
+            $hashtag_search = '#india';
          }
 
        }    
@@ -631,14 +631,25 @@ class DashboardController extends Controller
       if(!empty($user_exist)) { 
         //data exist
 
+       $twitter_data = UsersSocialCredentials::where('social_webname','=',$social_webname)->Where('user_id',$user_id)->first(); //data
+
+       //echo "$twitter_data";
+       //die();
+
+         $accesstoken = $twitter_data['accesstoken'];
+         $accesstokensecret = $twitter_data['accesstokensecret'];
+         $consumerkeyapikey = $twitter_data['consumerkeyapikey'];
+         $consumersecretapikey = $twitter_data['consumersecretapikey'];
+         //$hashtags = $twitter_data['hashtags'];
+       
 
             $tw_next_url ='';
 
             $settings = array(
-                'oauth_access_token' => "3413713334-uROrvdJT6kwD347za6YXtPS36HzF1zgSRhOTcnJ",
-                'oauth_access_token_secret' => "diDI8DdvES7ZtoCQvaOwzoar8ck26cVyVuf6Ec0KlQ6ra",
-                'consumer_key' => "6b04ZSegdWhBBh8x37itrnZ51",
-                'consumer_secret' => "flpga2v8VbU2UDejAB00s3SVM9YvpLHQ20SWC36z1EVcww7eXP"
+                'oauth_access_token' => $consumerkeyapikey,
+                'oauth_access_token_secret' => $consumersecretapikey,
+                'consumer_key' => $accesstoken,
+                'consumer_secret' => $accesstokensecret
             );
 
              // $url = 'https://api.twitter.com/1.1/search/tweets.json';
