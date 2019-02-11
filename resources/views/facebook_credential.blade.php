@@ -22,10 +22,17 @@
 
 <script type="text/javascript">
 
+/* Not Allow to Put Blank Space in TextBox  */
 function AvoidSpace(event) {
     var k = event ? event.which : window.event.keyCode;
     if (k == 32) return false;
 }
+
+/* Remove Space Automatically From Textbox String  */
+function removeSpaces(string) {
+ return string.split(' ').join('');
+}
+
 
 </script>
 
@@ -42,19 +49,19 @@ function AvoidSpace(event) {
    
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                             <div class="form-group">
-                                <input type="text" class="form-control" id="facebookappid" name="facebook_appid" placeholder="App ID*" value="" onkeypress="return AvoidSpace(event);"/>
+                                <input type="text" class="form-control" id="facebookappid" name="facebook_appid" placeholder="App ID*" value="" onkeypress="return AvoidSpace(event);" onblur="this.value=removeSpaces(this.value);"/>
                             </div>
                         </div>
 
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                             <div class="form-group">
-                                <input type="text" class="form-control" id="facebookappsecret" name="facebook_appsecret" placeholder="App Secret ID*" value="" onkeypress="return AvoidSpace(event);" />
+                                <input type="text" class="form-control" id="facebookappsecret" name="facebook_appsecret" placeholder="App Secret ID*" value="" onkeypress="return AvoidSpace(event);" onblur="this.value=removeSpaces(this.value);" />
                             </div>
                         </div>
 
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                             <div class="form-group">
-                                <input type="text" class="form-control" id="facebookusername" name="facebook_username" placeholder="Facebook Username* ex: zuck " value="" onkeypress="return AvoidSpace(event);" />
+                                <input type="text" class="form-control" id="facebookusername" name="facebook_username" placeholder="Facebook Username* ex: zuck " value="" onkeypress="return AvoidSpace(event);" onblur="this.value=removeSpaces(this.value);" />
                             </div>
                         </div>
 
