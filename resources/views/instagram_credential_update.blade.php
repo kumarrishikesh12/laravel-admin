@@ -39,18 +39,18 @@
    
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                             <div class="form-group">
-                                <input type="text" class="form-control" id="instagramaccesstoken" name="accesstoken" placeholder="CLIENT ID*" value="{{ $user->accesstoken }}" />
+                                <input type="text" class="form-control" id="instagramaccesstoken" name="accesstoken" placeholder="CLIENT ID*" value="{{ $user->accesstoken }}" required="required" oninvalid="this.setCustomValidity('Please Enter Valid Instagram AccessToken');" oninput="setCustomValidity('')" />
                             </div>
                         </div>
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                             <div class="form-group">
-                                <input type="text" class="form-control" id="instagramaccesstokensecret" name="accesstokensecret" placeholder="CLIENT SECRET ID*" value="{{ $user->accesstokensecret }}" />
+                                <input type="text" class="form-control" id="instagramaccesstokensecret" name="accesstokensecret" placeholder="CLIENT SECRET ID*" value="{{ $user->accesstokensecret }}" required="required" oninvalid="this.setCustomValidity('Please Enter Valid Instagram AccessTokenSecret');" oninput="setCustomValidity('')" />
                             </div>
                         </div>
 
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                             <div class="form-group">
-                                <input type="text" class="form-control" id="instagramhashtags" name="instagram_hashtags" placeholder="Hashtag Keyword*" value="{{ $user->hashtags }}" />
+                                <input type="text" class="form-control" id="instagramhashtags" name="instagram_hashtags" placeholder="Hashtag Keyword*" value="{{ $user->hashtags }}" required="required" oninvalid="this.setCustomValidity('Please Enter Valid Instagram Hashtag Keyword');" oninput="setCustomValidity('')" />
                             </div>
                         </div>
 
