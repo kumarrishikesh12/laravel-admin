@@ -19,10 +19,17 @@
     </div>
 </header>
 <!-- END: .main-heading -->
+
+<script type="text/javascript">
+
+function AvoidSpace(event) {
+    var k = event ? event.which : window.event.keyCode;
+    if (k == 32) return false;
+}
+
+</script>
+
 <div class="main-content">
-
-
-
 
         <form id="facebook_details" action="{{ url('dashboard/connect_to_facebook')}}" method="post" enctype="multipart/form-data">
 
@@ -35,19 +42,19 @@
    
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                             <div class="form-group">
-                                <input type="text" class="form-control" id="facebookappid" name="facebook_appid" placeholder="App ID*" value="" />
+                                <input type="text" class="form-control" id="facebookappid" name="facebook_appid" placeholder="App ID*" value="" onkeypress="return AvoidSpace(event);"/>
                             </div>
                         </div>
 
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                             <div class="form-group">
-                                <input type="text" class="form-control" id="facebookappsecret" name="facebook_appsecret" placeholder="App Secret ID*" value="" />
+                                <input type="text" class="form-control" id="facebookappsecret" name="facebook_appsecret" placeholder="App Secret ID*" value="" onkeypress="return AvoidSpace(event);" />
                             </div>
                         </div>
 
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                             <div class="form-group">
-                                <input type="text" class="form-control" id="facebookusername" name="facebook_username" placeholder="Facebook Username* ex: zuck " value="" />
+                                <input type="text" class="form-control" id="facebookusername" name="facebook_username" placeholder="Facebook Username* ex: zuck " value="" onkeypress="return AvoidSpace(event);" />
                             </div>
                         </div>
 

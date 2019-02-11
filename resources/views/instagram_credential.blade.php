@@ -19,9 +19,17 @@
     </div>
 </header>
 <!-- END: .main-heading -->
+<script type="text/javascript">
+
+function AvoidSpace(event) {
+    var k = event ? event.which : window.event.keyCode;
+    if (k == 32) return false;
+}
+
+</script>
+
+
 <div class="main-content">
-
-
 
         <form id="instagram_create_form" action="{{ url('dashboard/connect_to_instagram')}}" method="post" enctype="multipart/form-data">
 
@@ -34,12 +42,12 @@
    
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                             <div class="form-group">
-                                <input type="text" class="form-control" id="instagramaccesstoken" name="accesstoken" placeholder="CLIENT ID*" value="" />
+                                <input type="text" class="form-control" id="instagramaccesstoken" name="accesstoken" placeholder="CLIENT ID*" value="" onkeypress="return AvoidSpace(event);"/>
                             </div>
                         </div>
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                             <div class="form-group">
-                                <input type="text" class="form-control" id="instagramaccesstokensecret" name="accesstokensecret" placeholder="CLIENT SECRET ID*" value="" />
+                                <input type="text" class="form-control" id="instagramaccesstokensecret" name="accesstokensecret" placeholder="CLIENT SECRET ID*" value=""  onkeypress="return AvoidSpace(event);" />
                             </div>
                         </div>
 

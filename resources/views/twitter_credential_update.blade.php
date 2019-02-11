@@ -19,9 +19,14 @@
     </div>
 </header>
 <!-- END: .main-heading -->
+<script type="text/javascript">
 
+function AvoidSpace(event) {
+    var k = event ? event.which : window.event.keyCode;
+    if (k == 32) return false;
+}
 
-
+</script>
 
 
 @foreach ($user_exist as $user)
@@ -43,30 +48,30 @@
    
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                             <div class="form-group">
-                                <input type="text" class="form-control" id="twitteraccesstoken" name="accesstoken" placeholder="Access Token*" value="{{ $user->accesstoken }}" required="required" oninvalid="this.setCustomValidity('Please Enter Valid Twitter AccessToken');" oninput="setCustomValidity('')" />
+                                <input type="text" class="form-control" id="twitteraccesstoken" name="accesstoken" placeholder="Access Token*" value="{{ $user->accesstoken }}" required="required" oninvalid="this.setCustomValidity('Please Enter Valid Twitter AccessToken');" oninput="setCustomValidity('')" onkeypress="return AvoidSpace(event);" />
                             </div>
                         </div>
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                             <div class="form-group">
-                                <input type="text" class="form-control" id="twitteraccesstokensecret" name="accesstokensecret" placeholder="Access Token Secret*" value="{{ $user->accesstokensecret }}" required="required" oninvalid="this.setCustomValidity('Please Enter Valid Twitter AccessTokenSecret');" oninput="setCustomValidity('')" />
-                            </div>
-                        </div>
-
-                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                            <div class="form-group">
-                                <input type="text" class="form-control" id="twitterconsumerkeyapikey" name="consumerkeyapikey" placeholder="ConsumerKey API Key*" value="{{ $user->consumerkeyapikey }}" required="required" oninvalid="this.setCustomValidity('Please Enter Valid Twitter ConsumerApiKey');" oninput="setCustomValidity('')" />
+                                <input type="text" class="form-control" id="twitteraccesstokensecret" name="accesstokensecret" placeholder="Access Token Secret*" value="{{ $user->accesstokensecret }}" required="required" oninvalid="this.setCustomValidity('Please Enter Valid Twitter AccessTokenSecret');" oninput="setCustomValidity('')" onkeypress="return AvoidSpace(event);" />
                             </div>
                         </div>
 
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                             <div class="form-group">
-                                <input type="text" class="form-control" id="twitterconsumersecretapi" name="consumersecretapikey" placeholder="ConsumerSecret APISecret Key*" value="{{ $user->consumersecretapikey }}" required="required" oninvalid="this.setCustomValidity('Please Enter Valid Twitter ConsumerSecretApi');" oninput="setCustomValidity('')" />
+                                <input type="text" class="form-control" id="twitterconsumerkeyapikey" name="consumerkeyapikey" placeholder="ConsumerKey API Key*" value="{{ $user->consumerkeyapikey }}" required="required" oninvalid="this.setCustomValidity('Please Enter Valid Twitter ConsumerApiKey');" oninput="setCustomValidity('')" onkeypress="return AvoidSpace(event);" />
                             </div>
                         </div>
 
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                             <div class="form-group">
-                                <input type="text" class="form-control" id="twitterhashtags" name="twitter_hashtags" placeholder="Hashtag Keyword*" value="{{ $user->hashtags }}" required="required" oninvalid="this.setCustomValidity('Please Enter Valid Twitter Hashtag');" oninput="setCustomValidity('')" />
+                                <input type="text" class="form-control" id="twitterconsumersecretapi" name="consumersecretapikey" placeholder="ConsumerSecret APISecret Key*" value="{{ $user->consumersecretapikey }}" required="required" oninvalid="this.setCustomValidity('Please Enter Valid Twitter ConsumerSecretApi');" oninput="setCustomValidity('')" onkeypress="return AvoidSpace(event);" />
+                            </div>
+                        </div>
+
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="twitterhashtags" name="twitter_hashtags" placeholder="Hashtag Keyword*" value="{{ $user->hashtags }}" required="required" oninvalid="this.setCustomValidity('Please Enter Valid Twitter Hashtag');" oninput="setCustomValidity('')" onkeypress="return AvoidSpace(event);" />
                             </div>
                         </div>
 

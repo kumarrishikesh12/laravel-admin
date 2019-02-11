@@ -19,6 +19,14 @@
     </div>
 </header>
 <!-- END: .main-heading -->
+<script type="text/javascript">
+
+function AvoidSpace(event) {
+    var k = event ? event.which : window.event.keyCode;
+    if (k == 32) return false;
+}
+
+</script>
 
   
 <div class="main-content">
@@ -35,24 +43,24 @@
    
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                             <div class="form-group">
-                                <input type="text" class="form-control" id="twitteraccesstoken" name="accesstoken" placeholder="Access Token*" value="" />
+                                <input type="text" class="form-control" id="twitteraccesstoken" name="accesstoken" placeholder="Access Token*" value="" onkeypress="return AvoidSpace(event);" />
                             </div>
                         </div>
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                             <div class="form-group">
-                                <input type="text" class="form-control" id="twitteraccesstokensecret" name="accesstokensecret" placeholder="Access Token Secret*" value="" />
-                            </div>
-                        </div>
-
-                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                            <div class="form-group">
-                                <input type="text" class="form-control" id="twitterconsumerkeyapikey" name="consumerkeyapikey" placeholder="ConsumerKey API Key*" value="" />
+                                <input type="text" class="form-control" id="twitteraccesstokensecret" name="accesstokensecret" placeholder="Access Token Secret*" value="" onkeypress="return AvoidSpace(event);" />
                             </div>
                         </div>
 
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                             <div class="form-group">
-                                <input type="text" class="form-control" id="twitterconsumersecretapi" name="consumersecretapikey" placeholder="ConsumerSecret APISecret Key*" value="" />
+                                <input type="text" class="form-control" id="twitterconsumerkeyapikey" name="consumerkeyapikey" placeholder="ConsumerKey API Key*" value="" onkeypress="return AvoidSpace(event);" />
+                            </div>
+                        </div>
+
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="twitterconsumersecretapi" name="consumersecretapikey" placeholder="ConsumerSecret APISecret Key*" value="" onkeypress="return AvoidSpace(event);" />
                             </div>
                         </div>
 
