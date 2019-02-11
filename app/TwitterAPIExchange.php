@@ -15,7 +15,7 @@
 class TwitterAPIExchange
 {
     /**
-     * @var string
+     * @var string 
      */
     private $oauth_access_token;
 
@@ -272,7 +272,7 @@ class TwitterAPIExchange
      * @return string json If $return param is true, returns json data.
      */
     public function performRequest($return = true, $curlOptions = array())
-    {
+    {  
         if (!is_bool($return))
         {
             throw new Exception('performRequest parameter must be true or false');
@@ -293,7 +293,7 @@ class TwitterAPIExchange
             CURLOPT_HEADER => false,
             CURLOPT_URL => $this->url,
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_TIMEOUT => 10,
+            CURLOPT_TIMEOUT => 20,
         );
 
         if (!is_null($postfields))

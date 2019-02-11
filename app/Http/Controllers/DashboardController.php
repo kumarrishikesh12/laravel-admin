@@ -654,7 +654,7 @@ class DashboardController extends Controller
 
 
                 $url = 'https://api.twitter.com/1.1/search/tweets.json';
-                $getfield = '?q='.$hashtag_search.'&count=100'; //30hashtag post defined
+                $getfield = '?q='.$hashtag_search.'&count=50'; //30hashtag post defined
                 $requestMethod = 'GET';
                 $twitter = new TwitterAPIExchange($settings);
                  $tweest = $twitter->setGetfield($getfield)->buildOauth($url, $requestMethod)->performRequest();
@@ -677,7 +677,7 @@ class DashboardController extends Controller
 
                     //echo $next_results;   //echo $max_id;  //die();
                       $url = 'https://api.twitter.com/1.1/search/tweets.json';
-                      $getfield = '?q='.$hashtag_search.'&count=100'.$next_results; 
+                      $getfield = '?q='.$hashtag_search.'&count=50'.$next_results; 
                       $requestMethod = 'GET';
                       $twitter = new TwitterAPIExchange($settings);
                       $tweest = $twitter->setGetfield($getfield)->buildOauth($url, $requestMethod)->performRequest();

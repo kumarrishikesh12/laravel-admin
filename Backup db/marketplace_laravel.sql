@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Feb 08, 2019 at 08:33 AM
+-- Generation Time: Feb 08, 2019 at 02:26 PM
 -- Server version: 10.1.37-MariaDB
 -- PHP Version: 7.1.26
 
@@ -269,7 +269,7 @@ CREATE TABLE `userssocial_credentials` (
 INSERT INTO `userssocial_credentials` (`id`, `social_webname`, `accesstoken`, `accesstokensecret`, `consumerkeyapikey`, `consumersecretapikey`, `instagram_access_token`, `hashtags`, `app_id`, `appsecret`, `username`, `user_id`, `created_at`, `updated_at`, `remember_token`) VALUES
 (1, 'twitter', '6b04ZSegdWhBBh8x37itrnZ51', 'flpga2v8VbU2UDejAB00s3SVM9YvpLHQ20SWC36z1EVcww7eXP', '3413713334-uROrvdJT6kwD347za6YXtPS36HzF1zgSRhOTcnJ', 'diDI8DdvES7ZtoCQvaOwzoar8ck26cVyVuf6Ec0KlQ6ra', NULL, '#india', 'AppID', 'AppSecret', NULL, 1, '2019-02-06 16:17:58', '2019-02-06 16:17:58', NULL),
 (2, 'facebook', 'OBsiJBsp8lm_mtSj63o34UL_4kA', NULL, NULL, NULL, NULL, '#msdhoni', '606343186475644', 'aab3203d2fee6c0eb72aece9d986e201', 'Rishikeshkuamr12', 1, '2019-02-06 18:41:55', '2019-02-06 18:41:55', NULL),
-(3, 'instagram', '2907a5d9495a437ba75097b2a9414bfd', 'f3bfbb47b0974c108c0ce0b8247732d8', NULL, NULL, NULL, 'msdhoni', 'AppID', 'AppSecret', NULL, 1, '2019-02-07 09:49:19', '2019-02-07 09:49:19', NULL);
+(3, 'instagram', '2907a5d9495a437ba75097b2a9414bfd', 'f3bfbb47b0974c108c0ce0b8247732d8', NULL, NULL, NULL, '#guardiansofthegalaxy', 'AppID', 'AppSecret', NULL, 1, '2019-02-07 09:49:19', '2019-02-07 09:49:19', NULL);
 
 --
 -- Indexes for dumped tables
@@ -426,7 +426,7 @@ ALTER TABLE `sub_categories`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `userssocial_credentials`

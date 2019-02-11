@@ -68,18 +68,29 @@ if(!empty($next_page['end_cursor'])) {
 //display pagination if data exist and not empty
 //$next_page['exist_next_page'];
 $limit = 18;  
-$next_page['end_cursor'];
+$next_page['end_cursor']; //end_cursor for next page
 $tags_json_link; //link_url: https://www.instagram.com/explore/tags/guardiansofthegalaxy/?__a=1
 
-$next_full_url_= $tags_json_link.'&first='.$limit.'&after='.$next_page['end_cursor'];
+$next_full_url = $tags_json_link.'&first='.$limit.'&after='.$next_page['end_cursor'];
 //Get Full link with end_cursor above.
-
-
+//echo $next_full_url;
 }
+
+if(!empty($next_full_url) && !empty($next_page['end_cursor']) ){ //Start next url empty or exist or not
+
 ?>
 
+<ul class="pagination">
+  <li class="page-item float-left" id="previous_data"><a class="page-link" href=<?php echo 'instagram_feeds?__a=1&first='.$limit.'&after='.$next_page['end_cursor']; ?> name="previous">Previous Page </a></li>
 
+    <li class="page-item float-right" id="next_data"><a class="page-link" href=<?php echo 'instagram_feeds?__a=1&first='.$limit.'&after='.$next_page['end_cursor']; ?> name="next"> Next Page</a></li>
+</ul>
 
+<?php
+
+} //End next url empty or exist or not
+
+?>
 
 
 <?php 
