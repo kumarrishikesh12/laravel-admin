@@ -51,6 +51,10 @@ curl_setopt($ch, CURLOPT_SSLVERSION, 3);
 ?>
 
 
+@if (session('error'))
+<div class="alert alert-danger">{{ session('error') }}</div>
+@endif
+
 
 
 

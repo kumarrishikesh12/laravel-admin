@@ -18,6 +18,7 @@ use auth;
 use DB;
 use Session;
 use TwitterAPIExchange;
+use Exception;
 
 
 
@@ -278,7 +279,7 @@ class DashboardController extends Controller
         $rules = array(
             'facebook_appid' => 'required',
             'facebook_appsecret' => 'required',
-            'facebook_username' => 'required',
+            'facebook_username' => 'required'
         );
 
          //login user
@@ -350,7 +351,7 @@ class DashboardController extends Controller
             'facebook_appid' => 'required',
             'facebook_appsecret' => 'required',
             'facebook_hashtags' => 'required',
-            'facebook_username' => 'required',
+            'facebook_username' => 'required'
         );  
 
         //login user
@@ -358,12 +359,11 @@ class DashboardController extends Controller
 
         $data = $request->all();
 
-        $validator = Validator::make($data, $rules);
+        $validator = Validator::make($data,$rules);
 
         if ($validator->fails()) {
 
-             //return view('facebook_credential_update')->withErrors($validator)->withInput();
-             return redirect()->back()->withErrors($validator)->withInput();
+            return redirect()->back()->withErrors($validator)->withInput();
         }
             
             $social_webname = 'facebook';
@@ -827,6 +827,8 @@ else{//else Part
 
   public function facebook_feeds(Request $request){ 
 
+        #Follow This Steps to Get App_id and App_Secret with Public Data Access Permission   
+        //https://www.codexworld.com/create-facebook-app-id-app-secret/
        
 
          //login user
@@ -844,9 +846,6 @@ else{//else Part
          $client_id = $facebook_data['app_id'];
          $client_secret = $facebook_data['appsecret'];
          
-
-
-
          
           $access_token_url = 'https://graph.facebook.com/oauth/access_token?grant_type=client_credentials&client_id='.$client_id.'&client_secret='.$client_secret;
 
@@ -866,8 +865,27 @@ else{//else Part
          //$authToken = file_get_contents("https://graph.facebook.com/oauth/access_token?grant_type=client_credentials&client_id={$app_id}&client_secret={$app_secret}");
 
 
+    
 
-           $authToken = file_get_contents($access_token_url, false, stream_context_create($arrContextOptions));
+            try {
+
+                $authToken = file_get_contents($access_token_url, true, stream_context_create($arrContextOptions));
+
+                 //throw new Exception($authToken); 
+             }
+
+             //catch exception
+             catch(Exception $e) {            
+              //echo 'Message: ' .$e->getMessage();
+              Session::flash('error_message', "Invalid Facebook App_ID Or App_Secret");
+              return view('facebook_feeds')->with('success_message', trans('user/facebook.Wrong_App_Details'));
+
+             }
+
+ 
+
+           //$authToken = file_get_contents($access_token_url, false, stream_context_create($arrContextOptions));
+
             
            $access_token = http_build_query(json_decode($authToken));
            //access_token=606343186475644%7COBsiJBsp8lm_mtSj63o34UL_4kA&token_type=bearer
@@ -907,9 +925,26 @@ else{//else Part
             //https://www.facebook.com/hashtag/india       
             //die();
 
+
+              //try catch to check username is valid or not
+
+              try{
+
               $options  = array('http' => array('user_agent' => 'some_obscure_browser'));
               $context  = stream_context_create($options);
               $fbsite = file_get_contents('https://www.facebook.com/' . $username, false, $context);
+
+              }catch(Exception $e) {            
+              //echo 'Message: ' .$e->getMessage();
+            Session::flash('error_message', "Invalid Facebook App_ID Or App_Secret");
+             
+              return view('facebook_feeds')->withError('success_message', trans('user/facebook.Wrong_Username_Details'));
+
+             }
+
+
+
+
 
 
               $fbIDPattern = '/\"entity_id\":\"(\d+)\"/';
@@ -940,19 +975,18 @@ else{//else Part
 
 
 
-                $url = "https://graph.facebook.com/{$username_id}/?{$access_token}&summary=1&fields=id,name,first_name,last_name,email,picture,posts"; 
+                 $url = "https://graph.facebook.com/{$username_id}/?{$access_token}&summary=1&fields=id,name,first_name,last_name,email,picture,posts"; 
 
                 //die();
 
                 $json_object = file_get_contents($url, false, stream_context_create($arrContextOptions));
 
                  $facebook_feeds = json_decode($json_object, true);
-                 print_r($facebook_feeds);
-                 die();
+                 //print_r($facebook_feeds);
+                 //die();
 
 
 
-/*
             
             $fb = new \Facebook\Facebook([
               'app_id' => $app_id,
@@ -971,14 +1005,14 @@ else{//else Part
               exit;
             }
 
-             $user = $response->getGraphUser();
+             echo $user = $response->getGraphUser();
              $fb_user_data = json_decode($user, true);
                 
-              print_r($fb_user_data);  
-             die();
+             //print_r($fb_user_data);  
+              die('');
 
 
-*/
+
 
              /*
              if (!empty($fb_next_url)){

@@ -17,6 +17,8 @@ return [
     'AlreadyExist' => 'Your Facebook Details is AlreadyExist, Please Update it.',
     'Update' => 'Update Facebook Credential Details',
     'invalidDetail' => 'Invalid detail.',
+    'Wrong_App_Details' => 'Invalid Facebook App_ID Or App_Secret',
+    'Wrong_Username_Details' => 'Invalid Facebook Username',
     
 ];
 

@@ -32,31 +32,31 @@
                     <div class="row gutters">
                         
 
-                        <input type="hidden" class="form-control" id="uid" name="uid" value="{{ $user->id }}" />
+                        <input type="hidden" class="form-control" id="uid" name="uid" value="{{ $user->id }}" required="required" />
 
-                         <input type="hidden" class="form-control" id="user_id" name="user_id" value="{{ $user->user_id }}" />
+                         <input type="hidden" class="form-control" id="user_id" name="user_id" value="{{ $user->user_id }}" required="required" />
                          
    
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                             <div class="form-group">
-                                <input type="text" class="form-control" id="facebookappid" name="facebook_appid" placeholder="App ID*" value="{{ $user->app_id }}" />
+                                <input type="text" class="form-control" id="facebookappid" name="facebook_appid" placeholder="App ID*" value="{{ $user->app_id }}" required="required" oninvalid="this.setCustomValidity('Please Enter Valid Facebook AppID');" oninput="setCustomValidity('')" />
                             </div>
                         </div>
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                             <div class="form-group">
-                                <input type="text" class="form-control" id="facebookappsecret" name="facebook_appsecret" placeholder="App Secret ID*" value="{{ $user->appsecret }}" />
+                                <input type="text" class="form-control" id="facebookappsecret" name="facebook_appsecret" placeholder="App Secret ID*" value="{{ $user->appsecret }}" required="required" oninvalid="this.setCustomValidity('Please Enter Valid Facebook AppSecretKey');" oninput="setCustomValidity('')" />
                             </div>
                         </div>
 
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                             <div class="form-group">
-                                <input type="text" class="form-control" id="facebookhashtags" name="facebook_hashtags" placeholder="Hashtag Keyword*" value="{{ $user->hashtags }}" />
+                                <input type="text" class="form-control" id="facebookhashtags" name="facebook_hashtags" placeholder="Hashtag Keyword*" value="{{ $user->hashtags }}"  required="required" oninvalid="this.setCustomValidity('Please Enter Valid Facebook Hashtag Keyword');" oninput="setCustomValidity('')" />
                             </div>
                         </div>
 
                          <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                             <div class="form-group">
-                                <input type="text" class="form-control" id="facebookusername" name="facebook_username" placeholder="Facebook Username* ex: zuck " value="{{ $user->username }}" />
+                                <input type="text" class="form-control" id="facebookusername" name="facebook_username" placeholder="Facebook Username* ex: zuck " value="{{ $user->username }}" oninvalid="this.setCustomValidity('Please Enter Valid Facebook Username');" oninput="setCustomValidity('')" required="required" />
                             </div>
                         </div>
 

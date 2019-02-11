@@ -54,8 +54,6 @@ Route::group(array('middleware' => 'revalidate','middleware' => 'auth'), functio
 
     Route::post('facebook/update', 'DashboardController@update_facebook');
 
-
-
  
     Route::get('/dashboard/connect_to_instagram', 'DashboardController@connecttoinstagram');
 
@@ -73,6 +71,22 @@ Route::group(array('middleware' => 'revalidate','middleware' => 'auth'), functio
     //feeds Routes 
 
     Route::get('/twitter_feeds', 'DashboardController@twitter_feeds')->name('twitter_feeds');
+
+
+
+ /** Below Routes **/
+
+
+Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
+
+Route::get('/twitter_feeds', 'DashboardController@twitter_feeds')->name('twitter_feeds');
+
+Route::get('/facebook_feeds', 'DashboardController@facebook_feeds')->name('facebook_feeds');
+
+Route::post('/instagram_feeds', 'DashboardController@instagram_feeds');
+
+Route::post('/facebook_feeds', 'DashboardController@facebook_feeds');
+
 
 
 });
@@ -157,7 +171,7 @@ defined('MARKETPLACES_IMAGE_URL') or define('MARKETPLACES_IMAGE_URL', url('uploa
 Auth::routes();
 
 
-Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
+/*Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
 
 Route::get('/twitter_feeds', 'DashboardController@twitter_feeds')->name('twitter_feeds');
 
@@ -165,4 +179,4 @@ Route::get('/facebook_feeds', 'DashboardController@facebook_feeds')->name('faceb
 
 Route::post('/instagram_feeds', 'DashboardController@instagram_feeds');
 
-Route::post('/facebook_feeds', 'DashboardController@facebook_feeds');
+Route::post('/facebook_feeds', 'DashboardController@facebook_feeds');*/
