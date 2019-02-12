@@ -66,6 +66,10 @@ Route::group(array('middleware' => 'revalidate','middleware' => 'auth'), functio
 
 
     Route::get('/instagram_feeds', 'DashboardController@instagram_feeds')->name('instagram_feeds');
+
+
+    /* All Feeds*/
+    Route::get('/all_feeds', 'DashboardController@all_feeds')->name('all_feeds');
    
 
     //feeds Routes 

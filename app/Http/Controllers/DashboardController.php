@@ -640,10 +640,10 @@ class DashboardController extends Controller
          $accesstokensecret = $twitter_data['accesstokensecret'];
          $consumerkeyapikey = $twitter_data['consumerkeyapikey'];
          $consumersecretapikey = $twitter_data['consumersecretapikey'];
-         //$hashtags = $twitter_data['hashtags'];
-       
+         $hashtags = $twitter_data['hashtags']; //database_hastag
+        
+         //$hashtags = '#india_india'; //static_hastag
 
-            //$tw_next_url ='';
 
             $settings = array(
                 'oauth_access_token' => $consumerkeyapikey,
@@ -654,14 +654,38 @@ class DashboardController extends Controller
 
 
                 $url = 'https://api.twitter.com/1.1/search/tweets.json';
-                $getfield = '?q='.$hashtag_search.'&count=50'; //30hashtag post defined
+                $getfield = '?q='.$hashtags.'&count=50'; //30hashtag post defined
                 $requestMethod = 'GET';
                 $twitter = new TwitterAPIExchange($settings);
-                 $tweest = $twitter->setGetfield($getfield)->buildOauth($url, $requestMethod)->performRequest();
-                 
-                 $tweets = json_decode($tweest, true);
-                 //dd($tweets);
-                 //die();               
+                 $tweest_json = $twitter->setGetfield($getfield)->buildOauth($url,$requestMethod)->performRequest();
+
+                
+                  $tweets = json_decode($tweest_json, true);
+                  //echo $tweest_json;
+                  //print_r($tweets);
+                  //die();
+
+                 /* error Handle if Credential is wrong */
+                  if(!empty($tweets['errors'])) {
+
+                    //if Credential is wrong then show blank tweeter page
+                  Session::flash('success_message', "Please Check Your Twitter Credential We Could not authenticate you.");
+                  
+                  return view('twitter_feeds');
+
+                  }
+
+                  /* if No Data found in Status Array */
+                  if(empty($tweets['statuses'])){
+
+                   return view('twitter_feeds');
+
+                 }
+
+
+
+
+
 
 
 
@@ -954,7 +978,7 @@ else{//else Part
 
                 //convert to facebook Number_id
                 $username_id = $matches[1];
-               //$username_id = 'ayushmannkhurrana';
+               //$username_id = 'ayushmannkhurrana'; //792517837455295
 
 
 
@@ -982,8 +1006,9 @@ else{//else Part
                 $json_object = file_get_contents($url, false, stream_context_create($arrContextOptions));
 
                  $facebook_feeds = json_decode($json_object, true);
-                 //print_r($facebook_feeds);
-                 //die();
+                 
+                 print_r($facebook_feeds);
+                 die();
 
 
 
@@ -1005,11 +1030,11 @@ else{//else Part
               exit;
             }
 
-             echo $user = $response->getGraphUser();
+             $user = $response->getGraphUser();
              $fb_user_data = json_decode($user, true);
                 
              //print_r($fb_user_data);  
-              die('');
+             //die('');
 
 
 
@@ -1137,6 +1162,20 @@ else{//else Part
 
 
 
+
+
+
+
+//--------------------- Start All In One Hashtags Feeds -----------------------------------
+
+
+
+public function all_feeds(Request $request){ 
+
+
+    return view('all_feeds');
+
+}
 
 
 

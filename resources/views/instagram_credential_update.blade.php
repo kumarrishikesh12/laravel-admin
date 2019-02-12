@@ -54,12 +54,12 @@ function removeSpaces(string) {
    
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                             <div class="form-group">
-                                <input type="text" class="form-control" id="instagramaccesstoken" name="accesstoken" placeholder="CLIENT ID*" value="{{ $user->accesstoken }}" required="required" oninvalid="this.setCustomValidity('Please Enter Valid Instagram AccessToken');" oninput="setCustomValidity('')" onkeypress="return AvoidSpace(event);" onblur="this.value=removeSpaces(this.value);"/>
+                                <input type="text" class="form-control" id="instagramaccesstoken" name="accesstoken" placeholder="CLIENT ID*" value="{{ $user->accesstoken }}" required="required" oninvalid="this.setCustomValidity('Please Enter Valid Instagram Client ID');" oninput="setCustomValidity('')" onkeypress="return AvoidSpace(event);" onblur="this.value=removeSpaces(this.value);"/>
                             </div>
                         </div>
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                             <div class="form-group">
-                                <input type="text" class="form-control" id="instagramaccesstokensecret" name="accesstokensecret" placeholder="CLIENT SECRET ID*" value="{{ $user->accesstokensecret }}" required="required" oninvalid="this.setCustomValidity('Please Enter Valid Instagram AccessTokenSecret');" oninput="setCustomValidity('')" onkeypress="return AvoidSpace(event);" onblur="this.value=removeSpaces(this.value);"/>
+                                <input type="text" class="form-control" id="instagramaccesstokensecret" name="accesstokensecret" placeholder="CLIENT SECRET ID*" value="{{ $user->accesstokensecret }}" required="required" oninvalid="this.setCustomValidity('Please Enter Valid Instagram Client Secret ID');" oninput="setCustomValidity('')" onkeypress="return AvoidSpace(event);" onblur="this.value=removeSpaces(this.value);"/>
                             </div>
                         </div>
 

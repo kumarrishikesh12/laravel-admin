@@ -18,5 +18,5 @@ return [
     'twitter' => 'Twitter Feeds',
     'facebook' => 'Facebook Feeds',
     'instagram' => 'Instagram Feeds',
-    'all_feeds' => 'All Social Feeds',
+    'all_feeds' => 'All Hashtags Feeds',
 ];

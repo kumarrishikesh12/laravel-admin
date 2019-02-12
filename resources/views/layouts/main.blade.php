@@ -8,6 +8,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link rel="shortcut icon" href="{{ asset('assets/admin/images/favicon.ico') }}" />
         <title>@yield('title') | {{ config('app.name') }}</title>
+
+        <!-- Fontawesome CSS -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="{{ asset('assets/admin/css/bootstrap.min.css') }}" />
         <!-- Icomoon Icons CSS -->

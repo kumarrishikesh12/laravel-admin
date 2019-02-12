@@ -91,7 +91,7 @@ if(isset($fb_user_data) && !empty($fb_user_data)){ //main if
            <p><b> Birthdate: </b> <?php echo $fb_user_data['birthday']; ?> </p> 
            <p><b> Age: </b> <?php echo $fb_user_data['age_range']['min']; ?> </p> 
            <p><b> Location: </b> <?php echo $fb_user_data['location']['name']; ?> </p>
-           <p><b> ProfileLink : </b> <a href="<?php echo $fb_user_data['link']; ?>" name="profile_link"> View </a> </p> 
+           <p><b> ProfileLink : </b> <a href="<?php echo $fb_user_data['link']; ?>" name="profile_link"> View </a> </p>
            
 
     </div>

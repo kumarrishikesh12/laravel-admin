@@ -13,7 +13,7 @@
  * @link     http://github.com/j7mbo/twitter-api-php
  */
 class TwitterAPIExchange
-{
+{ 
     /**
      * @var string 
      */

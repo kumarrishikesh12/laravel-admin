@@ -18,6 +18,44 @@
         </div>
     </div>
 </header>
+<style type="text/css">
+
+#error_sp_msg{
+
+color: red;
+
+}
+</style>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+
+<script>
+
+$(document).ready(function (){
+
+$("#twitterhashtags").keypress(function(e) {
+    $("#error_sp_msg").remove();
+    var k           = e.keyCode,
+            $return = ((k > 64 && k < 91) || (k > 96 && k < 123) || k == 8 || k == 35  || (k >= 48 && k <= 57));
+      if(!$return) {
+        $("<span/>",{
+
+          "id" : "error_sp_msg",
+          "html"    : "</br> Special Characters & Space Not Allowed in Hashtag*"
+        }).insertAfter($(this));
+        return false;
+      }
+      
+})
+
+});
+
+</script>
+
+
+
 <!-- END: .main-heading -->
 <script type="text/javascript">
 
@@ -39,7 +77,7 @@ function removeSpaces(string) {
 @foreach ($user_exist as $user)
   
 <div class="main-content">
-        <form id="twitter_update_form" action="{{ url('twitter/update')}}" method="post" enctype="multipart/form-data">
+        <form  autocomplete="off" id="twitter_update_form" action="{{ url('twitter/update')}}" method="post" enctype="multipart/form-data">
 
              @include('layouts.include.notifications')
              {{ csrf_field() }}
@@ -78,7 +116,7 @@ function removeSpaces(string) {
 
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                             <div class="form-group">
-                                <input type="text" class="form-control" id="twitterhashtags" name="twitter_hashtags" placeholder="Hashtag Keyword*" value="{{ $user->hashtags }}" required="required" oninvalid="this.setCustomValidity('Please Enter Valid Twitter Hashtag');" oninput="setCustomValidity('')" onkeypress="return AvoidSpace(event);" onblur="this.value=removeSpaces(this.value);" />
+                                <input type="text" class="form-control" id="twitterhashtags" name="twitter_hashtags" placeholder="HashtagKeyword Ex: #India" value="{{ $user->hashtags }}" required="required" oninvalid="this.setCustomValidity('Please Enter Valid Twitter Hashtag');" oninput="setCustomValidity('')" onkeypress="return AvoidSpace(event);" onblur="this.value=removeSpaces(this.value);" />
                             </div>
                         </div>
 
@@ -112,3 +150,7 @@ function removeSpaces(string) {
     <!-- END: .main-content -->
 @endsection
         
+
+
+
+     
