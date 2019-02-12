@@ -1166,19 +1166,280 @@ else{//else Part
 
 
 
-//--------------------- Start All In One Hashtags Feeds -----------------------------------
+//--------------------- Start All In One Fetch Hashtags Feeds -----------------------------------
 
 
 
 public function all_feeds(Request $request){ 
 
+       // return $this->twitter_feeds($request);
+      //return $this->instagram_feeds($request);
 
-    return view('all_feeds');
+     $user = User::findOrFail(Auth::user()->id); // login_user_details
+     $user_id = $user->id; //get login user_id
+     $instagram_webname = 'instagram';  //instagram webname
+     $twitter_webname = 'twitter';  //twitter webname
+     $link = env('APP_URL').'/laravel-admin/all_feeds'; //instagram_feeds_url
+
+     //instagram_data
+ $instagram_data = UsersSocialCredentials::where('social_webname','=',$instagram_webname)->Where('user_id',$user_id)->first();
+
+
+     if(isset($instagram_data) && !empty($instagram_data) && !empty($instagram_data['accesstoken']) && !empty($instagram_data['accesstokensecret']) ){ //if data found
+         
+         $client_id = $instagram_data['accesstoken'];
+         $client_secret = $instagram_data['accesstokensecret'];
+         $hashtags = $instagram_data['hashtags'];
+         $hashtags = str_replace('#', '', $hashtags);
+         
+         $access_token_url = 'http://instagram.com/oauth/authorize/?client_id='.$client_id.'&redirect_uri='.$link.'&response_type=token';
+         
+         $tags_json_link = "https://www.instagram.com/explore/tags/".$hashtags."/?__a=1";
+    
+         $arrContextOptions=array(
+            "ssl"=>array(
+            "verify_peer"=>false,
+            "verify_peer_name"=>false,
+           ),
+         ); 
+
+         $instas = file_get_contents($tags_json_link, false, stream_context_create($arrContextOptions));
+         $insta_array = json_decode($instas, TRUE);  //gives array of that json
+         $insta_array_url = json_decode($instas, TRUE);
+
+
+         $limit = 18; //page per limit
+
+         for ($i=$limit; $i >= 0; $i--) {
+
+         if(array_key_exists($i,$insta_array["graphql"]["hashtag"]["edge_hashtag_to_media"]["edges"])){
+
+         $next_url_array = $insta_array["graphql"]["hashtag"]["edge_hashtag_to_media"]["page_info"];
+ 
+         $next_page = [
+
+         "exist_next_page"=> $next_url_array['has_next_page'],
+         "end_cursor"=> $next_url_array['end_cursor']
+      
+        ];
+  }
+}
+       
+        $next_page_end_cursor = $next_page['end_cursor'];
+        $exist_next_page = $next_page['exist_next_page'];
+ 
+
+     //return view('all_feeds')->with('instas',$instas)->with('insta_array',$insta_array)->with('next_page',$next_page)->with('tags_json_link',$tags_json_link);
+ 
+}
+
+
+/* else{  
+        
+        //if closed instagram_data
+    
+      #If AccessToken and AccessTokenSecret Empty or Null Redirect To All Feeds Page Without Data
+     
+      if($instagram_data['accesstoken'] === null && $instagram_data['accesstokensecret'] === null ){
+        
+            return view('all_feeds')->with('instagram_data',$instagram_data);
+         }
 
 }
+
+*/
+
+
+    /* -------------------------------- FETCH TWITTER DATA ------------------------------------ */
+        
+
+
+      $twitter_hashtags = DB::select( DB::raw("SELECT hashtags FROM userssocial_credentials WHERE user_id = '$user->id' and social_webname = '$twitter_webname' ") );
+
+
+        if(empty($twitter_hashtags)){
+
+            return view('all_feeds');
+
+         }else{
+
+          $hashtags_data = $twitter_hashtags['0']->hashtags; 
+
+            if(!empty($hashtags_data)){
+
+               $hashtag_search = $hashtags_data; //get value in hashtag_search variable
+            }else{
+    
+               $hashtag_search = '#india';
+              }
+
+         }
+        
+         /* Add Library */
+
+         try { //start_try_block
+ 
+         include(app_path()."/TwitterAPIExchange.php");
+
+         $user_exist = DB::select( DB::raw("SELECT * FROM userssocial_credentials WHERE user_id = '$user->id' and social_webname = '$twitter_webname' ") );
+
+             $twitter_social_webname  = $user_exist['0']->social_webname;
+             $twitter_accesstoken  = $user_exist['0']->accesstoken;
+             $twitter_accesstokensecret  = $user_exist['0']->accesstokensecret;
+             $twitter_consumerkeyapikey  = $user_exist['0']->consumerkeyapikey;
+             $twitter_consumersecretapikey  = $user_exist['0']->consumersecretapikey;
+             $twitter_hashtags  = $user_exist['0']->hashtags;
+
+             } //end_try_block
+                 catch(Exception $e) { 
+                     //echo "catch_error";
+                     return view('all_feeds');
+ 
+                }
+
+
+
+
+             /*if get all data from the Database */ 
+         if(!empty($twitter_social_webname) && !empty($twitter_accesstoken) && !empty($twitter_accesstokensecret) && !empty($twitter_consumerkeyapikey) && !empty($twitter_consumersecretapikey) && !empty($twitter_hashtags) ) { 
+
+                
+             $twitter_data = UsersSocialCredentials::where('social_webname','=',$twitter_social_webname)->Where('user_id',$user_id)->first(); //Twitter_data
+
+                $twitter_social_webname = $twitter_data['social_webname'];
+                $twitter_accesstoken = $twitter_data['accesstoken'];
+                $twitter_accesstokensecret = $twitter_data['accesstokensecret'];
+                $twitter_consumerkeyapikey = $twitter_data['consumerkeyapikey'];
+                $twitter_consumersecretapikey = $twitter_data['consumersecretapikey'];
+                $twitter_hashtags = $twitter_data['hashtags']; //database_hastags
+
+               //$hashtags = '#india_india'; //static_hastag
+
+                $settings = array(
+                'oauth_access_token' => $twitter_consumerkeyapikey,
+                'oauth_access_token_secret' => $twitter_consumersecretapikey,
+                'consumer_key' => $twitter_accesstoken,
+                'consumer_secret' => $twitter_accesstokensecret
+                
+                 );
+
+
+                $url = 'https://api.twitter.com/1.1/search/tweets.json';
+                $getfield = '?q='.$twitter_hashtags.'&count=50'; //50 Hashtag Defined
+                $requestMethod = 'GET';
+                $twitter = new TwitterAPIExchange($settings);
+                $tweest_json = $twitter->setGetfield($getfield)->buildOauth($url,$requestMethod)->performRequest();
+        
+                $tweets = json_decode($tweest_json, true);
+
+                //die();
+
+                /* error Handle if Credential is wrong */
+                  if(!empty($tweets['errors'])) {
+
+                    //if Credential is wrong then show blank tweeter page
+                  Session::flash('success_message', "Please Check Your Twitter Credential We Could not authenticate you.");
+                  return view('all_feeds');
+
+                  }
+
+                  /* if No Data found in Status Array */
+                  if(empty($tweets['statuses'])){
+
+                   return view('all_feeds');
+
+                 }
+
+                 /*Start For Search_metadata --> next_results_set  Pagination */
+                 $next_results = $tweets['search_metadata']['next_results'];
+                 $max_id = $tweets['search_metadata']['max_id'];
+                 /*End For Search_metadata --> next_results_set  Pagination */
+
+                
+
+                if(isset($next_results) && !empty($next_results) && isset($max_id) && !empty($max_id)){
+
+                      $url = 'https://api.twitter.com/1.1/search/tweets.json';
+                      $getfield = '?q='.$hashtag_search.'&count=50'.$next_results;  //Next 50 Hashtag Defined
+                      $requestMethod = 'GET';
+                      $twitter = new TwitterAPIExchange($settings);
+                      $tweest = $twitter->setGetfield($getfield)->buildOauth($url, $requestMethod)->performRequest();
+
+                      $tweets_next_page = json_decode($tweest, true);
+
+                 }else{
+
+                       $tweets_next_page = "Data Not Exist";
+                 }                 
+               
+
+          }//end_if_twitter_data_found
+
+
+
+             /* Send Instagram and Twitter Data To View  */
+
+
+
+        if(!empty($instas) && !empty($insta_array) && !empty($next_page) && !empty($tags_json_link) && !empty($tweets) && !empty($tweets_next_page) ) {
+            
+            #both data exist...
+            return view('all_feeds')->with('tweets',$tweets)->with('tweets_next_page',$tweets_next_page)->with('instas',$instas)->with('insta_array',$insta_array)->with('next_page',$next_page)->with('tags_json_link',$tags_json_link);
+
+        }else{
+
+            if(!empty($instas) && !empty($insta_array) && !empty($next_page) && !empty($tags_json_link)){
+            
+            #if instas data exist...
+
+             return view('all_feeds')->with('instas',$instas)->with('insta_array',$insta_array)->with('next_page',$next_page)->with('tags_json_link',$tags_json_link);
+
+            }else{
+
+                return view('all_feeds')->with('tweets',$tweets)->with('tweets_next_page',$tweets_next_page);
+
+            }
+
+
+        }
+
+
+   
+     
+
+  }//close all_feeds function
+
+
+
+
+
+
+
+
+  /* ################################# Load More ################################*/
+
+
+public function loadMore(Request $request){
+
+
+        
+     return view('all_feeds');
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
 
 
 
     
-    
-}
+} //close main class

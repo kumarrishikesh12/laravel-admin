@@ -78,6 +78,14 @@ Route::group(array('middleware' => 'revalidate','middleware' => 'auth'), functio
 
 
 
+
+    /*load More Data using Ajax*/
+
+    Route::get('jquery-loadmore',['as'=>'jquery-loadmore','uses'=>'DashboardController@loadMore']);
+
+
+
+
  /** Below Routes **/
 
 
