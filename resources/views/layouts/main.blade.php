@@ -86,6 +86,9 @@
 		<script src="{{ asset('assets/admin/plugins/bs-select/bs-select.min.js') }}"></script>
         <!-- Common JS -->
         <script src="{{ asset('assets/admin/js/common.js') }}"></script>
+        <!-- infinite-scroll -->
+        <script src="https://unpkg.com/infinite-scroll@3/dist/infinite-scroll.pkgd.min.js"></script>
+
         @yield('scripts')
         @yield('styles')
     </body>

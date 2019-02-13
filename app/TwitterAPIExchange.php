@@ -1,5 +1,9 @@
 <?php
 
+
+set_time_limit(0);
+
+
 /**
  * Twitter-API-PHP : Simple PHP wrapper for the v1.1 API
  *

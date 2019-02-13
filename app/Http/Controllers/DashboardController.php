@@ -1205,14 +1205,19 @@ public function all_feeds(Request $request){
 
          $instas = file_get_contents($tags_json_link, false, stream_context_create($arrContextOptions));
          $insta_array = json_decode($instas, TRUE);  //gives array of that json
-         $insta_array_url = json_decode($instas, TRUE);
+         //$insta_array_url = json_decode($instas, TRUE);
 
 
          $limit = 18; //page per limit
 
          for ($i=$limit; $i >= 0; $i--) {
 
-         if(array_key_exists($i,$insta_array["graphql"]["hashtag"]["edge_hashtag_to_media"]["edges"])){
+         //if(array_key_exists($i,$insta_array["graphql"]["hashtag"]["edge_hashtag_to_media"]["edges"])){
+
+
+         if(is_array($insta_array) && array_key_exists($i,$insta_array["graphql"]["hashtag"]["edge_hashtag_to_media"]["edges"])){
+
+           
 
          $next_url_array = $insta_array["graphql"]["hashtag"]["edge_hashtag_to_media"]["page_info"];
  
@@ -1222,12 +1227,19 @@ public function all_feeds(Request $request){
          "end_cursor"=> $next_url_array['end_cursor']
       
         ];
+  }else{
+
+     return view('all_feeds');
+
   }
+
+
+
+
 }
        
-        $next_page_end_cursor = $next_page['end_cursor'];
-        $exist_next_page = $next_page['exist_next_page'];
- 
+        //$next_page_end_cursor = $next_page['end_cursor'];
+        //$exist_next_page = $next_page['exist_next_page'];
 
      //return view('all_feeds')->with('instas',$instas)->with('insta_array',$insta_array)->with('next_page',$next_page)->with('tags_json_link',$tags_json_link);
  

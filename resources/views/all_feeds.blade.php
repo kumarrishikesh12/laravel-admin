@@ -21,17 +21,10 @@
     </div>
 </header>
 
-<style>
-.card {
-  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-  transition: 0.3s;
-  width: 40%;
-  display:inline-block;
-  margin-right: 60px;  /* right margin from between*/
-  margin-top: 10px;   /* top margin from header*/
-  margin-left: 25px; /* left margin from sidebar*/
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
-}
+<style>
+
 
 .card:hover {
   box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
@@ -42,26 +35,33 @@
 }
 
 a{
-
  color:#ff8507;
  text-decoration: none;
+}
+p{
+
+  font-size: 10px;
+
+}
+
+#viewmorebtn{
+
+color: #ffffff !important; 
+text-decoration: none;
+
 }
 
 
 </style>
 
+
 <?php 
+
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
 curl_setopt($ch, CURLOPT_SSLVERSION, 3);
-?>
 
-
-<!--  #############################  Start Pagination Show   ###############################  -->
-<div class="main-content">
-
-<?php 
 
 if(!empty($next_page['end_cursor'])) { 
 
@@ -70,10 +70,51 @@ if(!empty($next_page['end_cursor'])) {
 $limit = 18;  
 $next_page['end_cursor']; //end_cursor for next page
 $tags_json_link; //link_url: https://www.instagram.com/explore/tags/guardiansofthegalaxy/?__a=1
+
 $next_full_url = $tags_json_link.'&first='.$limit.'&after='.$next_page['end_cursor'];
 //Get Full link with end_cursor above.
 //echo $next_full_url;
+//die();
+
+
+
+$arrContextOptions=array(
+  "ssl"=>array(
+  "verify_peer"=>false,
+  "verify_peer_name"=>false,
+  ),
+ ); 
+
+$instas_next_json = file_get_contents($next_full_url, false, stream_context_create($arrContextOptions));
+$insta_next_array = json_decode($instas_next_json, TRUE);  //next page ka array data
+
+
+/*
+echo "<br>";
+echo "<br>";
+echo "<br>";
+echo "<br>";
+echo "<br>";
+echo "<br>";
+
+echo $instas_next_json; // next page ka json data
+
+die();
+
+*/
+
 }
+
+?>
+
+
+<!--  #############################  Start Pagination Show   ###############################  -->
+
+
+
+<?php 
+
+/*
 
 if(!empty($next_full_url) && !empty($next_page['end_cursor']) ){ 
    //Start next url empty or exist or not
@@ -89,15 +130,17 @@ if(!empty($next_full_url) && !empty($next_page['end_cursor']) ){
 
 } //End next url empty or exist or not
 
+*/
+
 ?>
 
 
 <!--  #############################  End Pagination Show   ###############################  -->
   
 
-
-
-
+<div class="main-content">
+  <div class="container">
+    <div class="row">
 
 <?php
 
@@ -106,15 +149,15 @@ if(isset($tweets) && !empty($tweets) && !empty($tweets_next_page['search_metadat
 foreach( $tweets['statuses'] as $key => $value){
 
 ?>
-
-
+   <div class="col-lg-3 col-sm-4 col-xs-8">
       <div class="card">
-      <div class="card-body">
-      <p><b> Tweet Post: </b> 
+        <div class="card-body">
+
+          <p><span> Tweet Post: </span> 
          <?php 
               $tweet = $tweets['statuses'][$key]['text'] = htmlspecialchars_decode($value['text']);
               if(!empty($tweet)){
-                echo $tweet;
+                echo   '<span style="font-size: 10px;font-weight: bold;margin-left: 12px;">'.$tweet .'.</span>';
               }else{  
 
                 echo "  ";  
@@ -123,8 +166,8 @@ foreach( $tweets['statuses'] as $key => $value){
           ?> 
       </p> 
               
-
-      <img src=<?php
+     
+      <img class="img-responsive" src=<?php
 
              $profile_image_url = $tweets['statuses'][$key] = $value['user']['profile_image_url']; 
              $profie_pic = str_replace("_normal", "_400x400", $profile_image_url);
@@ -134,30 +177,27 @@ foreach( $tweets['statuses'] as $key => $value){
              }else{
               echo public_path("/profile_pics/user_twitter.jpg");
              }
-             ?>
-      alt="profie_pic" style="width:100%">
-         
+             ?> alt="profie_pic" style="width:100%">
 
       <div class="container" style="margin-top:10px">
           
-          <h6><b> Username: <?php
-
+          <p><span> Username: </span> <?php
             $username = $tweets['statuses'][$key] = $value['user']['screen_name']; 
             if (!empty($username)) {
-              echo $username;
+              echo '<span style="font-size: 10px;font-weight: bold;margin-left: 12px;">'.$username .'.</span>';
             }else{
               echo "  ";
             }
            ?>
-          </b>
-          </h6> 
+          
+          </p> 
 
 
-          <p><b> Name: </b> <?php
+          <p><span> Name: </span> <?php
 
            $name = $tweets['statuses'][$key] = $value['user']['name'];  
            if (!empty($name)) {
-            echo '<span style="font-size: 16px;font-weight: bold;margin-left: 12px;">   '.$name.'</span>';
+            echo '<span style="font-size: 10px;font-weight: bold;margin-left: 12px;">'.$name.'</span>';
            }else {
               echo $username;
            }
@@ -167,11 +207,11 @@ foreach( $tweets['statuses'] as $key => $value){
           
 
 
-          <p><b> Description: </b> <?php 
+          <p><span> Description: </span> <?php 
 
             $description = $tweets['statuses'][$key] = $value['user']['description']; 
             if (!empty($description)) {
-              echo $description;
+              echo '<span style="font-size: 10px;font-weight: bold;margin-left: 12px;">   '.$description.'</span>';
             }else{
               echo "  ";
             }
@@ -179,11 +219,11 @@ foreach( $tweets['statuses'] as $key => $value){
           </p>
 
 
-          <p><b> Location: </b> <?php 
+          <p><span> Location: </span> <?php 
 
            $location = $tweets['statuses'][$key] = $value['user']['location'];  
             if(!empty($location)){
-              echo '<span style="font-size: 16px;font-weight: bold;margin-left: 12px;">   '.$location.'</span>';
+              echo '<span style="font-size: 10px;font-weight: bold;margin-left: 12px;">   '.$location.'</span>';
             }else{
 
                echo $location = " ";
@@ -193,11 +233,11 @@ foreach( $tweets['statuses'] as $key => $value){
 
 
 
-          <p><b> Followers: </b> <?php 
+          <p><span> Followers: </span> <?php 
 
            $followers = $tweets['statuses'][$key] = $value['user']['followers_count'];  
             if(!empty($followers)){
-             echo '<span style="font-size: 16px;font-weight: bold;margin-left: 12px;">   '.$followers.'</span>';
+             echo '<span style="font-size: 10px;font-weight: bold;margin-left: 12px;">   '.$followers.'</span>';
             }else{
 
                echo $followers = "  ";
@@ -207,11 +247,11 @@ foreach( $tweets['statuses'] as $key => $value){
 
 
 
-          <p><b> Following: </b> <?php 
+          <p><span> Following: </span> <?php 
 
            $following = $tweets['statuses'][$key] = $value['user']['friends_count'];  
             if(!empty($following)){
-              echo '<span style="font-size: 16px;font-weight: bold;margin-left: 12px;">   '.$following.'</span>';
+              echo '<span style="font-size: 10px;font-weight: bold;margin-left: 12px;">   '.$following.'</span>';
             }else{
 
                echo $following = "  ";
@@ -221,11 +261,11 @@ foreach( $tweets['statuses'] as $key => $value){
 
 
 
-          <p><b> Tweets: </b> <?php 
+          <p><span> Tweets: </span> <?php 
 
            $tweets_count = $tweets['statuses'][$key] = $value['user']['statuses_count'];  
             if(!empty($tweets_count)){
-              echo '<span style="font-size: 16px;font-weight: bold;margin-left: 12px;">   '.$tweets_count.'</span>';
+              echo '<span style="font-size: 10px;font-weight: bold;margin-left: 12px;">   '.$tweets_count.'</span>';
             }else{
 
                echo $tweets_count = "  ";
@@ -234,7 +274,7 @@ foreach( $tweets['statuses'] as $key => $value){
           </p>
 
 
-          <p><b> Joined Date: </b> <?php 
+          <p><span> Joined Date: </span> <?php 
 
            $join_date = $tweets['statuses'][$key] = $value['user']['created_at'];  
             if(!empty($join_date)){
@@ -245,7 +285,7 @@ foreach( $tweets['statuses'] as $key => $value){
                  $variable3 = $dateandtime->format("d M Y");
 
 
-          echo '<span data-toggle="tooltip" data-placement="top" title='.$variable1.' style="font-size: 16px;font-weight: bold;margin-left: 12px;">   '.$variable3.'</span>';
+          echo '<span data-toggle="tooltip" data-placement="top" title='.$variable1.' style="font-size: 10px;font-weight: bold;margin-left: 12px;">   '.$variable3.'</span>';
             }else{
 
                echo $join_date = "  ";
@@ -253,14 +293,14 @@ foreach( $tweets['statuses'] as $key => $value){
 
             ?>
            </p>
-
-           
-
-
          </div>
-     </div>
-   </div> 
 
+
+
+       </div>
+     </div>
+   </div>
+   
 
 <?php
 
@@ -268,20 +308,22 @@ foreach( $tweets['statuses'] as $key => $value){
  }
 ?>
 
+   
+  </div>
+ </div> 
+</div>
+    
+
 
 
 <!-- ########################## Fetch Instagram Feeds ################################ -->
 
+<!-- <div class="main-content" id="NextResult"> -->
 
 
-
-
-
-
-
-
-
-
+<div class="main-content">
+  <div class="container">
+   <div class="row">
 
 
 <?php 
@@ -310,7 +352,8 @@ if(isset($insta_array) && !empty($insta_array)){ //if data exist in Instas, disp
 
 ?>
 
- <div class="card">
+<div class="col-lg-3 col-sm-4 col-xs-8">
+  <div class="card">
       <div class="card-body">
 
        <p><b> Instagram Post: </b> <?php  
@@ -364,9 +407,9 @@ if(isset($insta_array) && !empty($insta_array)){ //if data exist in Instas, disp
 
 
 
+    </div>
    </div>
-</div>
-
+ </div>
 
 
 
@@ -379,30 +422,140 @@ if(isset($insta_array) && !empty($insta_array)){ //if data exist in Instas, disp
 
 ?>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    </div>
+  </div>
 </div>
 
-<script>
-$(document).ready(function(){
-  $('[data-toggle="tooltip"]').tooltip();   
-});
+
+
+<!-- ########################## End Fetch Instagram Feeds ################################ -->
+
+
+
+
+
+<!-- ########################## Display See More Feeds ################################ -->
+
+<!--  
+<div class="main-content">
+  <div class="container">
+    <div class="row">
+
+      <div class="col-lg-3 col-sm-4 col-xs-8">
+        <div class="card">
+          <div class="card-body">
+
+            <p><b> Instagram Post:</b> <span id="instagram_caption"> </span></p>
+
+             <p><b> Post Date: </b> <span id="instagram_post_date"> </span></p>
+
+             <p> <img id="instagram_post_image" alt="profie_pic" style="width:100%" /> </p>
+
+           </div>
+        </div> 
+      </div>
+    </div>
+  </div>
+</div> 
+ -->
+     
+
+<!-- ########################## ENd Display See More Feeds ################################ -->
+
+
+<script type="text/javascript"> 
+
+function myFunction(){
+
+ getUserInfo(<?php echo json_encode($insta_next_array); ?>)
+
+}
+
+
+
+function getUserInfo(userObj){
+
+   //console.log(userObj);
+   //alert(userObj['graphql']['hashtag']['edge_hashtag_to_media']['edges'][0]['node']['display_url']);
+   var limit = 18;
+
+   for (i=limit; i>=0; i--) {
+    
+    
+      if(userObj['graphql']['hashtag']['edge_hashtag_to_media']['edges'][i]['node']) {
+
+        //var latest_array = userObj['graphql']['hashtag']['edge_hashtag_to_media']['edges'][$i]['node'];
+
+        var image = userObj['graphql']['hashtag']['edge_hashtag_to_media']['edges'][i]['node']['display_url'];
+        var thumbnail = userObj['graphql']['hashtag']['edge_hashtag_to_media']['edges'][i]['node']['thumbnail_src'];
+        var instagram_id = userObj['graphql']['hashtag']['edge_hashtag_to_media']['edges'][i]['node']['id'];
+
+        var link = "https://www.instagram.com/p/userObj['shortcode']";
+
+        var caption = userObj['graphql']['hashtag']['edge_hashtag_to_media']['edges'][i]['node']['edge_media_to_caption']['edges'][0]["node"]["text"];
+
+        var date = userObj['graphql']['hashtag']['edge_hashtag_to_media']['edges'][i]['node']['taken_at_timestamp'];
+      
+
+
+         //alert(caption);
+         //document.getElementById("instagram_caption").innerHTML = caption;
+         //document.getElementById("instagram_post_date").innerHTML = date;
+         //document.getElementById("instagram_post_image").innerHTML = image;  
+
+         var top_divi ="<div class='main-content'><div class='container'><div class='row'><div class='col-lg-3 col-sm-4 col-xs-8'><div class='card'><div class='card-body'>";
+         document.write(top_divi);
+        
+        
+
+
+         document.write("<?php echo "<p><b> Instagram Post: </b><span>"; ?>"+ caption +"<?php echo "</span></p>";  ?>" );
+          
+
+
+         var bottom_divi = "</div> </div> </div> </div> </div> </div>";
+         document.write(bottom_divi);
+
+
+    }
+
+  }
+
+}
+
 </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container">
+
+<!--   <button type="button" onclick="myFunction()" id="ViewMore" name="viewmore" style="margin-top: 15px;margin-bottom: 15px;" class="btn btn-primary btn-block">View More</button> -->
+
+ <button type="button" id="ViewMore" name="viewmore" style="margin-top: 15px;margin-bottom: 15px;" class="btn btn-primary btn-block">  <a href=<?php echo 'all_feeds?__a=1&first='.$limit.'&after='.$next_page['end_cursor']; ?> name="next" id="viewmorebtn"> View More </a></button>
+
+
+    
+ 
+</div>
 
 <!-- END: .main-content -->
 @endsection
+
+
+
+
+
+
+
