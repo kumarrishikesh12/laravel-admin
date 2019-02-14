@@ -76,12 +76,11 @@ Route::group(array('middleware' => 'revalidate','middleware' => 'auth'), functio
 
     Route::get('/twitter_feeds', 'DashboardController@twitter_feeds')->name('twitter_feeds');
 
+    Route::get('/twitter_api','DashboardController@twitter_api')->name('twitter_api');
 
 
 
-    /*load More Data using Ajax*/
-
-    Route::get('jquery-loadmore',['as'=>'jquery-loadmore','uses'=>'DashboardController@loadMore']);
+    
 
 
 

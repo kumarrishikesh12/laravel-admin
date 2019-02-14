@@ -20,37 +20,11 @@
         </div>
     </div>
 </header>
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
-
-<script type="text/javascript">
-
-$(document).ready(function(){
-
-  $('[data-toggle="tooltip"]').tooltip();   
-
-
-// ===== Scroll to Top ==== 
-$(window).scroll(function() {
-    if ($(this).scrollTop() >= 50) {        // If page is scrolled more than 50px
-        $('#return-to-top').fadeIn(200);    // Fade in the arrow
-    } else {
-        $('#return-to-top').fadeOut(200);   // Else fade out the arrow
-    }
-});
-$('#return-to-top').click(function() {      // When arrow is clicked
-    $('body,html').animate({
-        scrollTop : 0                       // Scroll to top of body
-    }, 500);
-});
-
-
-});
-
-</script>
-
-
 <style>
+
 
 .card:hover {
   box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
@@ -67,6 +41,7 @@ a{
 p{
 
   font-size: 10px;
+
 }
 
 #viewmorebtn{
@@ -76,81 +51,31 @@ text-decoration: none;
 
 }
 
-.ajax-load{
-            background: #62bcf666;
-            padding: 10px 0px;
-            width: 100%;
-}
-
-
-#return-to-top {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: rgb(0, 0, 0);
-    background: rgba(0, 0, 0, 0.7);
-    width: 50px;
-    height: 50px;
-    display: block;
-    text-decoration: none;
-    -webkit-border-radius: 35px;
-    -moz-border-radius: 35px;
-    border-radius: 35px;
-    display: none;
-    -webkit-transition: all 0.3s linear;
-    -moz-transition: all 0.3s ease;
-    -ms-transition: all 0.3s ease;
-    -o-transition: all 0.3s ease;
-    transition: all 0.3s ease;
-}
-#return-to-top i {
-    color: #fff;
-    margin: 0;
-    position: relative;
-    left: 16px;
-    top: 13px;
-    font-size: 19px;
-    -webkit-transition: all 0.3s ease;
-    -moz-transition: all 0.3s ease;
-    -ms-transition: all 0.3s ease;
-    -o-transition: all 0.3s ease;
-    transition: all 0.3s ease;
-}
-#return-to-top:hover {
-    background: rgba(0, 0, 0, 0.9);
-}
-#return-to-top:hover i {
-    color: #fff;
-    top: 5px;
-}
 
 </style>
 
 
-<?php
+<?php 
 
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
 curl_setopt($ch, CURLOPT_SSLVERSION, 3);
 
-?>
 
+if(!empty($next_page['end_cursor'])) { 
 
-<!--  ####################  Check Instagram Next Page Data Exist    #####################  -->
-
-<?php
-
-#Get all data, if end_cursor is not empty 
-  
-if(!empty($next_page['end_cursor'])){    
-
-//print_r($insta_array);  //Instagram k currnet page ka array data
-//echo $instas;           //Instagram k currnet page ka json data
-
+//display pagination if data exist and not empty
+//$next_page['exist_next_page'];
 $limit = 18;  
-$next_page['end_cursor'];  //current_page next_results end_cursor
-$next_full_url = $tags_json_link.'&first='.$limit.'&after='.$next_page['end_cursor']; //Full_link + end_cursor 
+$next_page['end_cursor']; //end_cursor for next page
+$tags_json_link; //link_url: https://www.instagram.com/explore/tags/guardiansofthegalaxy/?__a=1
+
+$next_full_url = $tags_json_link.'&first='.$limit.'&after='.$next_page['end_cursor'];
+//Get Full link with end_cursor above.
+//echo $next_full_url;
+//die();
+
 
 
 $arrContextOptions=array(
@@ -161,121 +86,39 @@ $arrContextOptions=array(
  ); 
 
 $instas_next_json = file_get_contents($next_full_url, false, stream_context_create($arrContextOptions));
-//instagram k next page ka json data
-$insta_next_array = json_decode($instas_next_json, TRUE);  
-//instagram k next page ka array data
+$insta_next_array = json_decode($instas_next_json, TRUE);  //next page ka array data
 
-}
-
-?>
-<!--  ####################  End Check Instagram Next Page Data Exist    #####################  -->
-
-
-
-
-
-<!--  ####################  Check Twitter Next Page Data Exist    #####################  -->
-<?php
-
-if(!empty($tweets['search_metadata']['next_results']) ){   
-
-$next_page_parameter_instagram = $tweets['search_metadata']['next_results']; //current_page next_results 
-
-$twitter_url = env('APP_URL').'/laravel-admin/twitter_api'.$next_page_parameter_instagram;
-
-//print_r($tweets);   //twitter k currnet page ka array data
-//echo $tweest_json;  //twitter k currnet page ka json data
-
-//echo "</br></br></br></br></br></br></br></br>";
-//echo "</br></br></br></br></br></br></br></br>";
-
-//print_r($tweets_next_page);   //twitter k next page ka array data
-//echo $tweest_json_next_page;  //twitter k next page ka json data
-
-
-}
-
-?>
-<!--  ####################  End Check Instagram Next Page Data Exist    #####################  -->
-
-
-
-<script>
-
-
-$(document).ready(function(){
-
- $(window).scroll(function() {
-        if($(window).scrollTop() + $(window).height() >= $(document).height()) {
-
-            var insta_end_cursor = "<?php echo $next_full_url; ?>";
-            var twitter_end_cursor = "<?php echo $twitter_url; ?>";
-
-                //console.log(insta_end_cursor);
-                //console.log(twitter_end_cursor);
-
-
-            loadMoreData(insta_end_cursor,twitter_end_cursor);
-        }
-    });
-
-
-
- function loadMoreData(insta_end_cursor,twitter_end_cursor){
-
-  var my_protocol = window.location.protocol; //http
-  var my_domain = window.location.hostname;   //localhost
-  var twitter_url = '/laravel-admin/twitter_api';
-
-
-  //console.log(insta_end_cursor);
-  console.log(twitter_end_cursor);
-
-
-       $.ajax({
-                      url: twitter_url,
-                      type: "get",
-                      beforeSend: function(){
-                      $('.ajax-load').show();
-                      }
-
-                  })
-       .done(function(data){
-
-         $('.ajax-load').hide();
-         $("#loadMoreData").append(data);
-
-       })
-
-       .fail(function(jqXHR, ajaxOptions, thrownError){
-                  alert('Twitter Server Not Responding...');
-         });
-
-
-
-
-} 
-
-});
-
-
-
-</script>
-
-
-
-
-
-
-
-<!--  #######################  Start Next - Previous Pagination Show Using Twitter   #####################  -->
-<?php
 
 /*
-if(!empty($next_full_url) && !empty($next_page['end_cursor'])) {  
-//Start next url empty or exist or not
+echo "<br>";
+echo "<br>";
+echo "<br>";
+echo "<br>";
+echo "<br>";
+echo "<br>";
+
+echo $instas_next_json; // next page ka json data
+
+die();
+
+*/
+
+}
+
 ?>
 
+
+<!--  #############################  Start Pagination Show   ###############################  -->
+
+<div class="main-content">
+
+
+<?php 
+
+
+if(!empty($next_full_url) && !empty($next_page['end_cursor']) ){ 
+   //Start next url empty or exist or not
+?>
 
 <ul class="pagination">
   <li class="page-item float-left" id="previous_data"><a class="page-link" href=<?php echo 'all_feeds?__a=1&first='.$limit.'&after='.$next_page['end_cursor']; ?> name="previous">Previous Page </a></li>
@@ -285,34 +128,23 @@ if(!empty($next_full_url) && !empty($next_page['end_cursor'])) {
 
 <?php
 
-  }
+} //End next url empty or exist or not
 
- //End next url empty or exist or not
-
- <div class="clearfix"></br></div>
-
-*/
 ?>
 
-<!--  ###################  End Next - Previous Pagination Show   ###########################  -->
+</br>
 
 
-
-
-
-
-
-
-
-<!--  ###################  Start - Display Twitter Feeds   ###########################  -->
-
-<div class="main-content">
+<!--  #############################  End Pagination Show   ###############################  -->
+  
   <div class="container">
       <div class="row">
 
+
+
 <?php
 
-if(isset($tweets) && !empty($tweets) && !empty($tweets['search_metadata']['next_results'])) {  
+if(isset($tweets) && !empty($tweets) && !empty($tweets_next_page['search_metadata']['next_results'])) {  
 
 foreach( $tweets['statuses'] as $key => $value){
 
@@ -481,16 +313,13 @@ foreach( $tweets['statuses'] as $key => $value){
  </div> 
 </div>
     
-<!--  ###################  End - Display Twitter Feeds   ###########################  -->
 
 
 
+<!-- ########################## Fetch Instagram Feeds ################################ -->
 
+<!-- <div class="main-content" id="NextResult"> -->
 
-
-
-
-<!-- #################### Start - Display Instagram Feeds ########################### -->
 
 <div class="main-content">
   <div class="container">
@@ -583,6 +412,8 @@ if(isset($insta_array) && !empty($insta_array)){ //if data exist in Instas, disp
  </div>
 
 
+
+
 <?php
 
   } //foreach 
@@ -596,53 +427,150 @@ if(isset($insta_array) && !empty($insta_array)){ //if data exist in Instas, disp
 </div>
 
 
-<!-- Back to Top -->
-<a href="javascript:" id="return-to-top"><i class="icon-chevron-up"></i></a>
 
-
-<!-- ########################## End Display Instagram Feeds ################################ -->
-
+<!-- ########################## End Fetch Instagram Feeds ################################ -->
 
 
 
 
 
 <!-- ########################## Display See More Feeds ################################ -->
-                            
-                             <!-- Twitter  -->
 
-<!-- https://itsolutionstuff.com/post/php-infinite-scroll-pagination-using-jquery-ajax-exampleexample.html -->
-  
- <textarea rows="500" cols="70" style="" id="loadMoreData"></textarea> 
+<!--  
+<div class="main-content">
+  <div class="container">
+    <div class="row">
 
- <div id="loadMoreData1">   
+      <div class="col-lg-3 col-sm-4 col-xs-8">
+        <div class="card">
+          <div class="card-body">
 
-<!-- 
-  <div class="main-content">
-    <div class="container">
-      <div class="row">
+            <p><b> Instagram Post:</b> <span id="instagram_caption"> </span></p>
 
-       </div>
-     </div> 
-   </div>   -->
+             <p><b> Post Date: </b> <span id="instagram_post_date"> </span></p>
 
+             <p> <img id="instagram_post_image" alt="profie_pic" style="width:100%" /> </p>
 
-</div>
-
-
-<div class="ajax-load text-center" style="display:none">
-    <p><img src="http://demo.itsolutionstuff.com/plugin/loader.gif">Loading More post</p>
-</div>
+           </div>
+        </div> 
+      </div>
+    </div>
+  </div>
+</div> 
+ -->
+     
 
 <!-- ########################## ENd Display See More Feeds ################################ -->
+
+
+<script type="text/javascript"> 
+
+function myFunction(){
+
+ getUserInfo(<?php echo json_encode($insta_next_array); ?>)
+
+}
+
+
+
+function getUserInfo(userObj){
+
+   //console.log(userObj);
+   //alert(userObj['graphql']['hashtag']['edge_hashtag_to_media']['edges'][0]['node']['display_url']);
+   var limit = 18;
+
+   for (i=limit; i>=0; i--) {
+    
+    
+      if(userObj['graphql']['hashtag']['edge_hashtag_to_media']['edges'][i]['node']) {
+
+        //var latest_array = userObj['graphql']['hashtag']['edge_hashtag_to_media']['edges'][$i]['node'];
+
+        var image = userObj['graphql']['hashtag']['edge_hashtag_to_media']['edges'][i]['node']['display_url'];
+        var thumbnail = userObj['graphql']['hashtag']['edge_hashtag_to_media']['edges'][i]['node']['thumbnail_src'];
+        var instagram_id = userObj['graphql']['hashtag']['edge_hashtag_to_media']['edges'][i]['node']['id'];
+
+        var link = "https://www.instagram.com/p/userObj['shortcode']";
+
+        var caption = userObj['graphql']['hashtag']['edge_hashtag_to_media']['edges'][i]['node']['edge_media_to_caption']['edges'][0]["node"]["text"];
+
+        var date_time = userObj['graphql']['hashtag']['edge_hashtag_to_media']['edges'][i]['node']['taken_at_timestamp'];
+  
+         var date = new Date(date_time);
+
+         //alert(caption);
+         //document.getElementById("instagram_caption").innerHTML = caption;
+         //document.getElementById("instagram_post_date").innerHTML = date;
+         //document.getElementById("instagram_post_image").innerHTML = image;  
+
+
+
+           console.log(caption);
+           console.log(date);
+           console.log(image);
+
+
+
+
+           /*
+
+         var top_divi ="<div class='main-content'><div class='container'><div class='row'><div class='col-lg-3 col-sm-4 col-xs-8'><div class='card'><div class='card-body'>";
+         document.write(top_divi);
+        
+        
+
+
+         document.write("<?php //echo "<p><b> Instagram Post: </b><span>"; ?>"+ caption +"<?php //echo "</span></p>";  ?>" );
+          
+
+         var bottom_divi = "</div> </div> </div> </div> </div> </div>";
+         document.write(bottom_divi);
+        */
+
+    }
+
+  }
+
+}
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 
 <div class="container">
 
-<!--  <button type="button" onclick="load_more()" id="ViewMore" name="viewmore" style="margin-top: 15px;margin-bottom: 15px;" class="btn btn-primary btn-block">View More</button>  -->
+ <button type="button" onclick="myFunction()" id="ViewMore" name="viewmore" style="margin-top: 15px;margin-bottom: 15px;" class="btn btn-primary btn-block">View More</button> 
+
+
+
+
+
+
+
+
+ <button type="button" id="ViewMore" name="viewmore" style="margin-top: 15px;margin-bottom: 15px;" class="btn btn-primary btn-block">  <a href=<?php echo 'all_feeds?__a=1&first='.$limit.'&after='.$next_page['end_cursor']; ?> name="next" id="viewmorebtn"> Next Page </a></button>
+   
  
 </div>
+
 <!-- END: .main-content -->
 @endsection
+
+
+
+
+
+
+
