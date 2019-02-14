@@ -200,13 +200,18 @@ $twitter_url = env('APP_URL').'/laravel-admin/twitter_api'.$next_page_parameter_
 
 
 
-<script>
+<script type="text/javascript">
+
+function load_more() {
 
 
 $(document).ready(function(){
 
- $(window).scroll(function() {
-        if($(window).scrollTop() + $(window).height() >= $(document).height()) {
+ $("#loadMoreData").empty();
+
+ //$(window).scroll(function() {
+       
+        //if($(window).scrollTop() + $(window).height() >= $(document).height()) {
 
             var insta_end_cursor = "<?php echo $next_full_url; ?>";
             var twitter_end_cursor = "<?php echo $twitter_url; ?>";
@@ -214,11 +219,9 @@ $(document).ready(function(){
                 //console.log(insta_end_cursor);
                 //console.log(twitter_end_cursor);
 
-
             loadMoreData(insta_end_cursor,twitter_end_cursor);
-        }
-    });
-
+        //}
+ //   });
 
 
  function loadMoreData(insta_end_cursor,twitter_end_cursor){
@@ -252,12 +255,14 @@ $(document).ready(function(){
          });
 
 
-
+       
 
 } 
 
 });
 
+
+ }
 
 
 </script>
@@ -641,7 +646,7 @@ if(isset($insta_array) && !empty($insta_array)){ //if data exist in Instas, disp
 
 <div class="container">
 
-<!--  <button type="button" onclick="load_more()" id="ViewMore" name="viewmore" style="margin-top: 15px;margin-bottom: 15px;" class="btn btn-primary btn-block">View More</button>  -->
+<button type="button" onclick="load_more()" id="ViewMore" name="viewmore" style="margin-top: 15px;margin-bottom: 15px;" class="btn btn-primary btn-block">View More</button> 
  
 </div>
 <!-- END: .main-content -->
