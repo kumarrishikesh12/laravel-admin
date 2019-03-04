@@ -72,13 +72,15 @@ Route::group(array('middleware' => 'revalidate','middleware' => 'auth'), functio
     Route::get('/all_feeds', 'DashboardController@all_feeds')->name('all_feeds');
    
 
-    //feeds Routes 
+    /* feeds Routes */ 
 
     Route::get('/twitter_feeds', 'DashboardController@twitter_feeds')->name('twitter_feeds');
 
+    /* Twitter Api */
     Route::get('/twitter_api','DashboardController@twitter_api')->name('twitter_api');
 
-
+    /* Instagram Api */
+    Route::get('/instagram_api','DashboardController@instagram_api')->name('instagram_api');
 
     
 

@@ -10,11 +10,12 @@ curl_setopt($ch, CURLOPT_SSLVERSION, 3);
 
 <?php
 
-if(isset($tweest_json) && !empty($tweest_json && !empty($tweets_next_page['search_metadata']['next_results']))) {
+if(isset($tweest_json) && !empty($tweest_json) && isset($tweets_next_page) && !empty($tweets_next_page)) {
 
 echo $tweest_json;
 
 } 
 ?>
+
 
 

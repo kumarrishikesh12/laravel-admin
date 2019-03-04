@@ -5,6 +5,7 @@
 @section('content')
 
 <!-- BEGIN .main-heading -->
+
 <header class="main-heading">
     <div class="container-fluid">
         <div class="row">
@@ -20,30 +21,14 @@
         </div>
     </div>
 </header>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-
 
 <script type="text/javascript">
 
 $(document).ready(function(){
 
   $('[data-toggle="tooltip"]').tooltip();   
-
-
-// ===== Scroll to Top ==== 
-$(window).scroll(function() {
-    if ($(this).scrollTop() >= 50) {        // If page is scrolled more than 50px
-        $('#return-to-top').fadeIn(200);    // Fade in the arrow
-    } else {
-        $('#return-to-top').fadeOut(200);   // Else fade out the arrow
-    }
-});
-$('#return-to-top').click(function() {      // When arrow is clicked
-    $('body,html').animate({
-        scrollTop : 0                       // Scroll to top of body
-    }, 500);
-});
-
 
 });
 
@@ -150,20 +135,13 @@ if(!empty($next_page['end_cursor'])){
 
 $limit = 18;  
 $next_page['end_cursor'];  //current_page next_results end_cursor
-$next_full_url = $tags_json_link.'&first='.$limit.'&after='.$next_page['end_cursor']; //Full_link + end_cursor 
+//$next_full_url = $tags_json_link.'&first='.$limit.'&after='.$next_page['end_cursor']; 
 
+$next_full_url = env('APP_URL').'/laravel-admin/instagram_api'; 
 
-$arrContextOptions=array(
-  "ssl"=>array(
-  "verify_peer"=>false,
-  "verify_peer_name"=>false,
-  ),
- ); 
-
-$instas_next_json = file_get_contents($next_full_url, false, stream_context_create($arrContextOptions));
-//instagram k next page ka json data
-$insta_next_array = json_decode($instas_next_json, TRUE);  
-//instagram k next page ka array data
+//http://localhost/laravel-admin/instagram_api
+//Full_link + end_cursor 
+//die();
 
 }
 
@@ -177,11 +155,26 @@ $insta_next_array = json_decode($instas_next_json, TRUE);
 <!--  ####################  Check Twitter Next Page Data Exist    #####################  -->
 <?php
 
-if(!empty($tweets['search_metadata']['next_results']) ){   
+if(!empty($tweets['search_metadata']['next_results'])  ){   
 
-$next_page_parameter_instagram = $tweets['search_metadata']['next_results']; //current_page next_results 
 
-$twitter_url = env('APP_URL').'/laravel-admin/twitter_api'.$next_page_parameter_instagram;
+//$next_page_parameter = $tweets['search_metadata']['next_results']; 
+//current_result_page 
+
+//echo "</br></br>";
+
+$tweets_next_results_page = $tweets_next_page['search_metadata']['next_results'];
+//next_results_page;
+
+$twitter_url = env('APP_URL').'/laravel-admin/twitter_api'.$tweets_next_results_page;
+
+
+/*  if(isset($next_results_parameters) && !empty($next_results_parameters)){
+    $twitter_url = env('APP_URL').'/laravel-admin/twitter_api'.$next_results_parameters;      
+  }*/
+
+
+
 
 //print_r($tweets);   //twitter k currnet page ka array data
 //echo $tweest_json;  //twitter k currnet page ka json data
@@ -202,105 +195,214 @@ $twitter_url = env('APP_URL').'/laravel-admin/twitter_api'.$next_page_parameter_
 
 <script type="text/javascript">
 
-function load_more() {
-
+function load_more(){
 
 $(document).ready(function(){
 
- $("#loadMoreData").empty();
-
- //$(window).scroll(function() {
-       
-        //if($(window).scrollTop() + $(window).height() >= $(document).height()) {
-
-            var insta_end_cursor = "<?php echo $next_full_url; ?>";
-            var twitter_end_cursor = "<?php echo $twitter_url; ?>";
-
-                //console.log(insta_end_cursor);
-                //console.log(twitter_end_cursor);
-
-            loadMoreData(insta_end_cursor,twitter_end_cursor);
-        //}
- //   });
+/*  $(window).scroll(function() {
+        if($(window).scrollTop() + $(window).height() >= $(document).height()) {  */
 
 
- function loadMoreData(insta_end_cursor,twitter_end_cursor){
+            var insta_end_cursor = "<?php
+              
+               if(!empty($next_full_url)){
+                echo $next_full_url; 
+               }else{
+                echo $next_full_url = 'undefined';
+                }  
 
-  var my_protocol = window.location.protocol; //http
-  var my_domain = window.location.hostname;   //localhost
-  var twitter_url = '/laravel-admin/twitter_api';
+             ?>";
 
 
-  //console.log(insta_end_cursor);
-  console.log(twitter_end_cursor);
+            var twitter_full_url = "<?php
+
+               if(!empty($twitter_url)) {
+                echo $twitter_url; 
+               }else {
+               echo $twitter_url = 'undefined';
+               }  ?>";
+
+
+                console.log(insta_end_cursor);
+                console.log(twitter_full_url);
+
+
+
+               if (typeof insta_end_cursor === 'undefined' || insta_end_cursor === null ) {
+                       // variable is undefined or null   
+                }
+                else{    // variable is defined   
+
+                loadMoreData(twitter_full_url); //twitter
+                loadMoreDataInstagram(insta_end_cursor); //instagram
+
+               
+
+/*
+    }
+ });
+
+*/
+
+ function loadMoreData(twitter_full_url){
 
 
        $.ajax({
-                      url: twitter_url,
+                      url: twitter_full_url,
                       type: "get",
                       beforeSend: function(){
                       $('.ajax-load').show();
                       }
 
-                  })
+              })
+
        .done(function(data){
 
          $('.ajax-load').hide();
-         $("#loadMoreData").append(data);
+         // $("#loadMoreData").append(data);
+
+         let feeds = JSON.parse(data)
+         console.log('twitter --> ', feeds);
+         // statuses[""0""].user.profile_background_image_url_https
+         let feedElement = '';
+         feeds.statuses.forEach(function(feed){
+          //console.log(feed);
+
+
+          var profile_pics = feed.user.profile_image_url;
+           profile_pics = profile_pics.replace("_normal", "_400x400");
+
+
+            //console.log(feed.user.created_at); //Sat Dec 12 17:17:20 +0000 2015
+
+            var myDate = feed.user.created_at;
+            var str = myDate; 
+            var day = str.slice(0, 3);
+            var month = str.slice(4, 7);
+            var date = str.slice(8, 10);
+            var year = str.slice(26, 31);
+          
+
+            /* get url of tweet */
+
+            var tweet_string_get = feed.text;
+            var matches = tweet_string_get.match(/\bhttps?::\/\/\S+/gi);
+
+            console.log(matches);
+
+
+
+          let feedDiv = '<div class="col-lg-3 col-sm-4 col-xs-8"><div class="card"><div class="card-body"><p><span> Tweet Post: </span> <span style="font-size: 10px;font-weight: bold;margin-left: 12px;"> '+feed.text+'  </span></p><img class="img-responsive" src=" '+profile_pics+' " alt="profie_pic" style="width:100%"><div class="container" style="margin-top:10px"><p><span> Username: </span> <span style="font-size: 10px;font-weight: bold;margin-left: 12px;"> '+feed.user.screen_name+' </span></p><p><span> Name: </span> <span style="font-size: 10px;font-weight: bold;margin-left: 12px;"> '+feed.user.name+'</span></p><p><span> Description: </span> <span style="font-size: 10px;font-weight: bold;margin-left: 12px;"> '+feed.user.description+'</span></p><p><span> Location: </span> <span style="font-size: 10px;font-weight: bold;margin-left: 12px;"> '+feed.user.location+' </span></p><p><span> Followers: </span> <span style="font-size: 10px;font-weight: bold;margin-left: 12px;">  '+feed.user.followers_count+' </span></p><p><span> Following: </span> <span style="font-size: 10px;font-weight: bold;margin-left: 12px;">  '+feed.user.friends_count+'  </span></p><p><span> Tweets: </span> <span style="font-size: 10px;font-weight: bold;margin-left: 12px;"> '+feed.user.statuses_count+'</span></p><p><span> Joined Date: </span> <span data-toggle="tooltip" data-placement="top" title="" style="font-size: 10px;font-weight: bold;margin-left: 12px;" data-original-title="07:48:AM">  '+date+ ' '+month+' '+year+' </span></p></div></div></div></div>'
+
+
+          feedElement += feedDiv;
+
+         })
+
+         $('#loadMoreData').append(feedElement);
 
        })
 
        .fail(function(jqXHR, ajaxOptions, thrownError){
                   alert('Twitter Server Not Responding...');
+         });    
+    
+ }  //loadMoreData
+ 
+
+function loadMoreDataInstagram(insta_end_cursor){
+
+
+   $.ajax({
+                      url: insta_end_cursor,
+                      type: "get",
+                      beforeSend: function(){
+                      $('.ajax-load').show();
+                      }
+
+              })
+
+       .done(function(data){
+
+         $('.ajax-load').hide();
+
+
+
+         let insta_feeds = JSON.parse(data)
+         console.log('instagram --> ', insta_feeds);
+         // statuses[""0""].user.profile_background_image_url_https
+         //.graphql.hashtag.edge_hashtag_to_media.edges["0"].node.display_url
+         let feedElements = '';
+
+          insta_feeds.graphql.hashtag.edge_hashtag_to_media.edges.forEach(function(feed_insta){
+
+
+            //var instat_date = feed_insta.node.taken_at_timestamp;
+             //Fri Feb 15 2019 18:48:54 GMT+0530 (IST)
+            //var insta_month = date_moment.slice(4, 7);
+            //var insta_date =  date_moment.slice(8, 10);
+            //var insta_year =  date_moment.slice(11, 15);
+            
+
+            //let feedsDiv = '<div class="col-lg-3 col-sm-4 col-xs-8"><div class="card"><div class="card-body"><p><b> Instagram Post: </b>'+ feed_insta.node.edge_media_to_caption.edges["0"].node.text +'<a href="https://www.instagram.com/p/"> View Post  </a></p>  <p><b> Post Date: </b>'+ feed_insta.node.taken_at_timestamp +'</p><p><img src="'+feed_insta.node.display_url+'" alt="profie_pic" style="width:100%"></p> </div></div></div>'
+                
+        
+            var ti = feed_insta.node.taken_at_timestamp;
+            var myDate = new Date(ti*1000);
+            var insta_post_date = myDate.toGMTString();  //Mon, 18 Feb 2019 04:45:54 GMT
+
+
+              var dat = insta_post_date.slice(5, 8);
+              var mont = insta_post_date.slice(8,11);
+              var yea = insta_post_date.slice(12,16);
+  
+            //document.write(myDate.toGMTString()+"<br>"+myDate.toLocaleString());
+            //console.log(myDate);
+
+
+            let feedsDiv = '<div class="col-lg-3 col-sm-4 col-xs-8"><div class="card"><div class="card-body"><p><b> Instagram Post: </b>'+ feed_insta.node.edge_media_to_caption.edges["0"].node.text +'</p>  <p><b> Post Date: </b>'+mont+' '+dat+', '+ yea +'</p><p><img src="'+feed_insta.node.display_url+'" alt="profie_pic" style="width:100%"></p> </div></div></div>'
+
+            feedElements += feedsDiv;
+
+
+    })
+
+      $('#loadMoreData').append(feedElements);
+ })
+          
+/*
+          
+
+          
+
+
+          })
+
+          $('#loadMoreData').append(feedElement);
+
+
+         });   
+
+            .fail(function(jqXHR, ajaxOptions, thrownError){
+                  alert('Instagram Server Not Responding...');
          });
 
+*/
 
-       
-
-} 
-
-});
+} //loadMoreDataInstagram
 
 
- }
+
+
+   } //else
+
+
+ });
+
+ }    
 
 
 </script>
-
-
-
-
-
-
-
-<!--  #######################  Start Next - Previous Pagination Show Using Twitter   #####################  -->
-<?php
-
-/*
-if(!empty($next_full_url) && !empty($next_page['end_cursor'])) {  
-//Start next url empty or exist or not
-?>
-
-
-<ul class="pagination">
-  <li class="page-item float-left" id="previous_data"><a class="page-link" href=<?php echo 'all_feeds?__a=1&first='.$limit.'&after='.$next_page['end_cursor']; ?> name="previous">Previous Page </a></li>
-
-    <li class="page-item float-right" id="next_data"><a class="page-link" href=<?php echo 'all_feeds?__a=1&first='.$limit.'&after='.$next_page['end_cursor']; ?> name="next"> Next Page</a></li>
-</ul>
-
-<?php
-
-  }
-
- //End next url empty or exist or not
-
- <div class="clearfix"></br></div>
-
-*/
-?>
-
-<!--  ###################  End Next - Previous Pagination Show   ###########################  -->
-
 
 
 
@@ -601,9 +703,6 @@ if(isset($insta_array) && !empty($insta_array)){ //if data exist in Instas, disp
 </div>
 
 
-<!-- Back to Top -->
-<a href="javascript:" id="return-to-top"><i class="icon-chevron-up"></i></a>
-
 
 <!-- ########################## End Display Instagram Feeds ################################ -->
 
@@ -614,25 +713,15 @@ if(isset($insta_array) && !empty($insta_array)){ //if data exist in Instas, disp
 
 <!-- ########################## Display See More Feeds ################################ -->
                             
-                             <!-- Twitter  -->
+                             <!-- Twitter and Insta  -->
 
 <!-- https://itsolutionstuff.com/post/php-infinite-scroll-pagination-using-jquery-ajax-exampleexample.html -->
   
- <textarea rows="500" cols="70" style="" id="loadMoreData"></textarea> 
-
- <div id="loadMoreData1">   
-
-<!-- 
-  <div class="main-content">
     <div class="container">
-      <div class="row">
-
-       </div>
-     </div> 
-   </div>   -->
-
-
-</div>
+       <div class="row" id="loadMoreData">   
+ 
+       </div>  
+  </div>
 
 
 <div class="ajax-load text-center" style="display:none">

@@ -965,8 +965,6 @@ else{//else Part
 
 
 
-
-
               $fbIDPattern = '/\"entity_id\":\"(\d+)\"/';
               if (!preg_match($fbIDPattern, $fbsite, $matches)) {
                throw new Exception('Unofficial API is broken or user not found');
@@ -1159,6 +1157,282 @@ else{//else Part
 
 
 
+//--------------------- Start Instagram Api GEt's -------------------------------
+
+
+ public function instagram_api(Request $request){  
+
+
+         //login user
+         $user = User::findOrFail(Auth::user()->id);
+         $user_id = $user->id; //get login user id
+         $social_webname = 'instagram';  // Social webname
+         $link = env('APP_URL').'/laravel-admin/instagram_api';  //http://localhost/laravel-admin/instagram_api
+        
+         $instagram_data = UsersSocialCredentials::where('social_webname','=',$social_webname)->Where('user_id',$user_id)->first();
+
+         if(isset($instagram_data) && !empty($instagram_data) && !empty($instagram_data['accesstoken']) && !empty($instagram_data['accesstokensecret']) ){ //if data found
+         
+         $client_id = $instagram_data['accesstoken'];
+         $client_secret = $instagram_data['accesstokensecret'];
+         $hashtags = $instagram_data['hashtags'];
+         $hashtags = str_replace('#', '', $hashtags);
+         
+
+         
+         $access_token_url = 'http://instagram.com/oauth/authorize/?client_id='.$client_id.'&redirect_uri='.$link.'&response_type=token';
+         
+
+         $tags_json_link = "https://www.instagram.com/explore/tags/".$hashtags."/?__a=1";
+        
+         //$tags_json_link = "https://www.instagram.com/explore/tags/india/?__a=1"; //&page=10
+
+         $arrContextOptions=array(
+            "ssl"=>array(
+            "verify_peer"=>false,
+            "verify_peer_name"=>false,
+           ),
+         ); 
+
+
+        $instas = file_get_contents($tags_json_link, false, stream_context_create($arrContextOptions));
+          //dd($instas);
+          //echo "<pre>";
+          //print_r($instas);
+          //die();
+
+         $insta_array = json_decode($instas, TRUE);  //gives array of that json
+         $insta_array_url = json_decode($instas, TRUE);
+
+
+         $limit = 18; //page per limit
+
+         for ($i=$limit; $i >= 0; $i--) {
+
+         if(array_key_exists($i,$insta_array["graphql"]["hashtag"]["edge_hashtag_to_media"]["edges"])){
+
+         $next_url_array = $insta_array["graphql"]["hashtag"]["edge_hashtag_to_media"]["page_info"];
+ 
+         $next_page = [
+
+         "exist_next_page"=> $next_url_array['has_next_page'],
+         "end_cursor"=> $next_url_array['end_cursor']
+      
+        ];
+
+         //print_r($last_page); // exist_next_page: 1 = true , end_cursor: token_next_page   
+
+  }
+
+}
+        /* if Next Page Exist then get the end_Cursor for that and data  */
+        //$next_page_end_cursor = $next_page['end_cursor'];
+        //$exist_next_page = $next_page['exist_next_page'];
+        //die();
+
+        return $instas;
+
+   //return view('instagram_api')->with('instas',$instas)->with('insta_array',$insta_array)->with('next_page',$next_page)->with('tags_json_link',$tags_json_link);
+
+     
+  }//if closed instagram_data
+
+else{//else Part  
+
+
+ if($instagram_data['accesstoken'] === NULL && $instagram_data['accesstokensecret'] === NULL ){
+            
+            //if don't get access_token from database then redirect without data
+            //echo "if don't get access_token from database then redirect without data";
+            
+            return view('all_feeds');
+         }
+
+ 
+     } //end else
+
+    //return view('instagram_feeds')->with('instas',$instas)->with('next_url_api',$next_url_api);
+ 
+
+}// function closed
+
+
+
+
+
+//--------------------- End  Instagram Api GEt's -------------------------------
+
+
+
+
+
+
+
+
+
+
+//--------------------- Start Twitter Api GEt's -------------------------------
+
+
+
+  public function twitter_api(Request $request){ 
+
+        //login user
+        $user = User::findOrFail(Auth::user()->id);
+        $user_id = $user->id; //get login user id
+        $social_webname = 'twitter';  // Social webname
+        
+
+         $user_hashtags = DB::select( DB::raw("SELECT hashtags FROM userssocial_credentials WHERE user_id = '$user->id' and social_webname = '$social_webname' ") );
+
+         //print_r($user_hashtags);
+         //die();
+
+         if(empty($user_hashtags)){
+
+            //if not get hashtags show blank  tweeter page
+            return view('twitter_feeds');
+
+         }else{
+
+
+          $hashtags_data = $user_hashtags['0']->hashtags; 
+
+
+         if(!empty($hashtags_data)){
+
+            $hashtag_search = $hashtags_data; // My Search Tag Add Dynamic Here
+
+         }else{
+            $hashtag_search = '#india';
+         }
+
+       }    
+        
+     
+     $user_exist = DB::select( DB::raw("SELECT * FROM userssocial_credentials WHERE user_id = '$user->id' and social_webname = '$social_webname' ") );
+
+       //$myJSON = json_encode($user_exist);
+       //echo $myJSON;
+       //die();
+
+      include(app_path()."/TwitterAPIExchange.php");
+
+      if(!empty($user_exist)) { 
+        //data exist
+
+       $twitter_data = UsersSocialCredentials::where('social_webname','=',$social_webname)->Where('user_id',$user_id)->first(); //data
+
+       //echo "$twitter_data";
+       //die();
+
+         $accesstoken = $twitter_data['accesstoken'];
+         $accesstokensecret = $twitter_data['accesstokensecret'];
+         $consumerkeyapikey = $twitter_data['consumerkeyapikey'];
+         $consumersecretapikey = $twitter_data['consumersecretapikey'];
+         $hashtags = $twitter_data['hashtags']; //database_hastag
+        
+         //$hashtags = '#india_india'; //static_hastag
+
+
+            $settings = array(
+                'oauth_access_token' => $consumerkeyapikey,
+                'oauth_access_token_secret' => $consumersecretapikey,
+                'consumer_key' => $accesstoken,
+                'consumer_secret' => $accesstokensecret
+            );
+
+
+                  //$parameters = $_SERVER['REQUEST_URI']; 
+                  //$parameter = str_replace('/laravel-admin/twitter_api?','',$parameters);
+                  //$get_max_id = $_GET["max_id"]; 
+                  //http://localhost/laravel-admin/twitter_api?max_id=1096296476781760512&q=%23india&count=40&include_entities=1
+                  //die();
+
+
+                $url = 'https://api.twitter.com/1.1/search/tweets.json';
+                $getfield = '?q='.$hashtags.'&count=40'; //40hashtag post defined
+                $requestMethod = 'GET';
+                $twitter = new TwitterAPIExchange($settings);
+                 $tweest_json = $twitter->setGetfield($getfield)->buildOauth($url,$requestMethod)->performRequest();
+
+                
+                  $tweets = json_decode($tweest_json, true);
+                  //echo $tweest_json;
+                  //print_r($tweets);
+                  //die();
+
+                 /* error Handle if Credential is wrong */
+                  if(!empty($tweets['errors'])) {
+
+                    //if Credential is wrong then show blank tweeter page
+                  Session::flash('success_message', "Please Check Your Twitter Credential We Could not authenticate you.");
+                  
+                  return view('twitter_feeds');
+
+                  }
+
+                  /* if No Data found in Status Array */
+                  if(empty($tweets['statuses'])){
+
+                   return view('twitter_feeds');
+
+                 }
+
+
+
+
+             /*Start For Search_metadata --> next_results_set  Pagination */
+   
+                 $next_results = $tweets['search_metadata']['next_results'];
+                 $max_id = $tweets['search_metadata']['max_id'];
+                
+             /*End For Search_metadata --> next_results_set  Pagination */
+
+
+                 if(isset($next_results) && !empty($next_results) && isset($max_id) && !empty($max_id)){
+
+                    //echo $next_results;   //echo $max_id;  //die();
+                      $url = 'https://api.twitter.com/1.1/search/tweets.json';
+                      $getfield = '?q='.$hashtag_search.'&count=40'.$next_results; 
+                      $requestMethod = 'GET';
+                      $twitter = new TwitterAPIExchange($settings);
+                      $tweest = $twitter->setGetfield($getfield)->buildOauth($url, $requestMethod)->performRequest();
+                      $tweets_next_page = json_decode($tweest, true);
+
+                      //$next_results = $tweets_next_page['search_metadata']['next_results'];
+                        //die();
+
+                 }
+
+                  
+
+
+                Session::flash('success_message', "Your Instagram Details Found");
+                return view('twitter_api')->with('tweest_json',$tweest_json)->with('tweets_next_page',$tweets_next_page);
+
+
+
+      }else{
+
+      //data empty
+        Session::flash('success_message', "Details Not Found, Please Update Tokens");
+
+      return redirect()->back()->with('success_message', trans('user/twitter.UserNotFound'));
+
+
+      }
+
+
+
+  }
+/*--------------------- End Twitter Api GEt's -------------------------------*/
+
+
+
+
+
+
 
 
 
@@ -1168,8 +1442,7 @@ else{//else Part
 
 public function all_feeds(Request $request){ 
 
-       // return $this->twitter_feeds($request);
-      //return $this->instagram_feeds($request);
+
 
      $user = User::findOrFail(Auth::user()->id); // login_user_details
      $user_id = $user->id; //get login user_id
@@ -1239,7 +1512,7 @@ public function all_feeds(Request $request){
 
      //return view('all_feeds')->with('instas',$instas)->with('insta_array',$insta_array)->with('next_page',$next_page)->with('tags_json_link',$tags_json_link);
  
-}
+//}
 
 
 /* else{  
@@ -1335,7 +1608,7 @@ public function all_feeds(Request $request){
 
 
                 $url = 'https://api.twitter.com/1.1/search/tweets.json';
-                $getfield = '?q='.$twitter_hashtags.'&count=30'; //50 Hashtag Defined
+                $getfield = '?q='.$twitter_hashtags.'&count=40'; //40 Hashtag Defined
                 $requestMethod = 'GET';
                 $twitter = new TwitterAPIExchange($settings);
                 $tweest_json = $twitter->setGetfield($getfield)->buildOauth($url,$requestMethod)->performRequest();
@@ -1360,17 +1633,18 @@ public function all_feeds(Request $request){
 
                  }
 
+
                  /*Start For Search_metadata --> next_results_set  Pagination */
                  $next_results = $tweets['search_metadata']['next_results'];
                  $max_id = $tweets['search_metadata']['max_id'];
-                 $query = $tweets['search_metadata']['query'];
                  /*End For Search_metadata --> next_results_set  Pagination */
 
-
+                    
                 if(isset($next_results) && !empty($next_results) && isset($max_id) && !empty($max_id)){
 
+
                       $url = 'https://api.twitter.com/1.1/search/tweets.json';
-                      //$getfield =  '?q='.$twitter_hashtags.'&count=50';  //Next 50 Hashtag Defined
+                      //$getfield =  '?q='.$twitter_hashtags.'&count=40';  //Next 40 Hashtag Defined
                       $getfield = str_replace("%23","#",$next_results);
                       $requestMethod = 'GET';
                       $twitter = new TwitterAPIExchange($settings);
@@ -1379,13 +1653,15 @@ public function all_feeds(Request $request){
 
                       $tweets_next_page = json_decode($tweest_json_next_page, true);
 
+
                  }else{
 
                        $tweets_next_page = "Data Not Exist";
-                 }                 
-               
+                 } 
+
 
           }//end_if_twitter_data_found
+
 
 
 
@@ -1408,7 +1684,7 @@ public function all_feeds(Request $request){
 
             }else{
 
-                return view('all_feeds')->with('tweets',$tweets)->with('tweest_json',$tweest_json)->with('tweets_next_page',$tweets_next_page)->with('tweest_json_next_page',$tweest_json_next_page);
+                return view('all_feeds')->with('tweets',$tweets)->with('tweest_json',$tweest_json)->with('tweets_next_page',$tweets_next_page)->with('tweest_json_next_page',$tweest_json_next_page)->with('next_results_parameters',$next_results_parameters);
 
             }
 
@@ -1416,175 +1692,19 @@ public function all_feeds(Request $request){
         }
 
 
-   
-     
+
+
+     }else{             //close instagram_if_data_not_found
+
+        return view('all_feeds');
+    }
+    
+
+
+
+
 
   }//close all_feeds function
-
-
-
-
-
-
-
-
-
-
-
-
- //--------------------- Start Twitter Api GEt's -------------------------------
-
-
-
-  public function twitter_api(Request $request){ 
-
-        //login user
-        $user = User::findOrFail(Auth::user()->id);
-        $user_id = $user->id; //get login user id
-        $social_webname = 'twitter';  // Social webname
-        
-
-         $user_hashtags = DB::select( DB::raw("SELECT hashtags FROM userssocial_credentials WHERE user_id = '$user->id' and social_webname = '$social_webname' ") );
-
-         //print_r($user_hashtags);
-         //die();
-
-         if(empty($user_hashtags)){
-
-            //if not get hashtags show blank  tweeter page
-            return view('twitter_api');
-
-         }else{
-
-
-          $hashtags_data = $user_hashtags['0']->hashtags; 
-
-
-         if(!empty($hashtags_data)){
-
-            $hashtag_search = $hashtags_data; // My Search Tag Add Dynamic Here
-
-         }else{
-            $hashtag_search = '#india';
-         }
-
-       }    
-        
-     
-     $user_exist = DB::select( DB::raw("SELECT * FROM userssocial_credentials WHERE user_id = '$user->id' and social_webname = '$social_webname' ") );
-
-       //$myJSON = json_encode($user_exist);
-       //echo $myJSON;
-       //die();
-
-      include(app_path()."/TwitterAPIExchange.php");
-
-      if(!empty($user_exist)) { 
-        //data exist
-
-       $twitter_data = UsersSocialCredentials::where('social_webname','=',$social_webname)->Where('user_id',$user_id)->first(); //data
-
-       //echo "$twitter_data";
-       //die();
-
-         $accesstoken = $twitter_data['accesstoken'];
-         $accesstokensecret = $twitter_data['accesstokensecret'];
-         $consumerkeyapikey = $twitter_data['consumerkeyapikey'];
-         $consumersecretapikey = $twitter_data['consumersecretapikey'];
-         $hashtags = $twitter_data['hashtags']; //database_hastag
-        
-         //$hashtags = '#india_india'; //static_hastag
-
-
-            $settings = array(
-                'oauth_access_token' => $consumerkeyapikey,
-                'oauth_access_token_secret' => $consumersecretapikey,
-                'consumer_key' => $accesstoken,
-                'consumer_secret' => $accesstokensecret
-            );
-
-
-                $url = 'https://api.twitter.com/1.1/search/tweets.json';
-                $getfield = '?q='.$hashtags.'&count=30'; //30hashtag post defined
-                $requestMethod = 'GET';
-                $twitter = new TwitterAPIExchange($settings);
-                 $tweest_json = $twitter->setGetfield($getfield)->buildOauth($url,$requestMethod)->performRequest();
-
-                
-                  $tweets = json_decode($tweest_json, true);
-                  //echo $tweest_json;
-                  //print_r($tweets);
-                  //die();
-
-                 /* error Handle if Credential is wrong */
-                  if(!empty($tweets['errors'])) {
-
-                    //if Credential is wrong then show blank tweeter page
-                  Session::flash('success_message', "Please Check Your Twitter Credential We Could not authenticate you.");
-                  
-                  return view('twitter_api');
-
-                  }
-
-                  /* if No Data found in Status Array */
-                  if(empty($tweets['statuses'])){
-
-                   return view('twitter_api');
-
-                 }
-
-
-
-
-             /*Start For Search_metadata --> next_results_set  Pagination */
-   
-                 $next_results = $tweets['search_metadata']['next_results'];
-                 $max_id = $tweets['search_metadata']['max_id'];
-                
-             /*End For Search_metadata --> next_results_set  Pagination */
-
-
-                 if(isset($next_results) && !empty($next_results) && isset($max_id) && !empty($max_id)){
-
-                    //echo $next_results;   //echo $max_id;  //die();
-                      $url = 'https://api.twitter.com/1.1/search/tweets.json';
-                      $getfield = '?q='.$hashtag_search.'&count=50'.$next_results; 
-                      $requestMethod = 'GET';
-                      $twitter = new TwitterAPIExchange($settings);
-                      $tweest = $twitter->setGetfield($getfield)->buildOauth($url, $requestMethod)->performRequest();
-                      $tweets_next_page = json_decode($tweest, true);
-
-                      //$next_results = $tweets_next_page['search_metadata']['next_results'];
-                        //die();
-
-                 }
-
-                  
-
-
-                Session::flash('success_message', "Your Instagram Details Found");
-
-                return view('twitter_api')->with('tweest_json',$tweest_json)->with('tweets_next_page',$tweets_next_page);
-
-
-
-      }else{
-
-      //data empty
-        Session::flash('success_message', "Details Not Found, Please Update Tokens");
-
-      return redirect()->back()->with('success_message', trans('user/twitter.UserNotFound'));
-
-
-      }
-
-
-
-  }
-
-
-
-
 
 
 
